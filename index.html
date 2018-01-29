@@ -12,15 +12,15 @@
 
 		<p>I am a: </p>
 
-		<button>user</button>
+		<button onclick="loginUser()">user</button>
 
-		<button>blogger</button>
+		<button onclick="loginBlogger()">blogger</button>
 
 	</div>
 
 	<div id="user-interface">
 
-		<div id="navbar">
+		<div class="navbar" id="user-navbar">
 			<div class="nav-element" onclick="navigateTo('home-content')">
 				<p>Home</p>
 			</div>
@@ -94,6 +94,22 @@
 	</div>
 
 	<div id="blogger-interface">
+
+		<div class="navbar" id="blogger-navbar">
+
+			<div class="nav-element" onclick="navigateTo('create-article')">
+
+				<p>Create article</p>
+
+			</div>
+
+			<div id="create-article">
+
+				<p>harpadarpada</p>
+
+			</div>
+
+		</div>
 
 	</div>
 
