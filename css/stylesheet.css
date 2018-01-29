@@ -1,0 +1,136 @@
+/*
+colors:
+blue: #0093ec
+white
+black
+*/
+
+body {
+	font-family: tahoma, arial;
+	margin: 0px;
+	padding: 0px;
+}
+
+#blogger-picture {
+	width: 150px;
+	float: right;
+	margin: 0px 5px;
+}
+
+#user-interface {
+	width: 1200px;
+	padding: 3px;
+}
+
+#login-screen {
+	display: none;
+}
+
+#home-content {
+	width: 1178px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #0093ec;
+
+	padding: 10px;
+}
+
+#about-content {
+	width: 1178px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #0093ec;
+
+	padding: 10px;
+}
+
+#blog-content, #about-content, #home-content {
+	display: none;
+}
+
+#navbar {
+	width: 1198;
+	min-height: 50px;
+
+	border-style: solid;
+	border-width: 1px;
+	border-color: #0093ec;
+	border-radius: 4px 4px 0px 0px;
+}
+
+.nav-element {
+	display: inline-block;
+
+	padding: 0px 50px;
+	margin: 0px;
+
+	border-width: 0px;
+
+	font-size: large;
+
+	border-radius: 3px;
+
+	border-collapse: collapse;
+
+	cursor:pointer;
+
+	-webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+}
+
+.nav-element:hover {
+	background-color: #0093ec;
+}
+
+.last-element {
+	float: right;
+}
+
+#categories {
+	width: 196px;
+	height: 600px;
+
+	border-style: solid;
+	border-width: 1px;
+	border-color: #0093ec;
+	border-collapse: collapse;
+
+	float: left;
+}
+
+.category-element p {
+	padding: 2px 2px;
+
+
+	cursor:pointer;
+	
+	-webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+}
+
+.category-element {
+	border-radius: 2px;
+}
+
+.category-element:hover {
+	background-color: #0093ec;
+}
+
+#content {
+	width: 1000px;
+	height: 600px;
+
+	border-style: solid;
+	border-width: 1px;
+	border-color: #0093ec;
+
+	float: right;
+}
