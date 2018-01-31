@@ -8,16 +8,6 @@
 
 <body>
 
-	<div id="login-screen">
-
-		<p>I am a: </p>
-
-		<button onclick="loginUser()">user</button>
-
-		<button onclick="loginBlogger()">blogger</button>
-
-	</div>
-
 	<div id="user-interface">
 
 		<div class="navbar" id="user-navbar">
@@ -27,6 +17,10 @@
 
 			<div class="nav-element" onclick="navigateTo('blog-content')">
 				<p>Blog</p>
+			</div>
+
+			<div class="nav-element last-element" onclick="navigateTo('login-interface')">
+				<p>Login</p>
 			</div>
 
 			<div class="nav-element last-element" onclick="navigateTo('about-content')">
@@ -72,6 +66,16 @@
 
 			</aside>
 
+		</div>
+
+		<div id="login-interface" class="content">
+			<form>
+				Username:
+				<input id="username"><br>
+				Password:
+				<input id="password" type="password"><br>
+				<button onclick="loginBlogger(); return false"> log in </button>
+			</form>
 		</div>
 
 		<div id="about-content" class="content">

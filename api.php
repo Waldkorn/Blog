@@ -4,8 +4,40 @@
 	$verb = $_SERVER['REQUEST_METHOD'];
 
 	if ($verb == 'GET') {
-
+		//returns message of specific category
 		if (isset($_GET['category'])) {
+
+		//checks if the login is correct
+		} elseif (isset($_GET['username']) and isset($_GET['password'])) {
+
+			$provided_username = $_GET['username'];
+			$provided_password = $_GET['password'];
+
+			$dsn = 'mysql:host=127.0.0.1;dbname=blogdb';
+			$user_name = 'root';
+			$pass_word = "";
+
+			$connection = new PDO($dsn, $user_name, $pass_word);
+			$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+			$sql = "SELECT * FROM bloggercredentials where id = 1";
+
+			$result = $connection->query($sql);
+
+			foreach ($result as $row) {
+
+				$username = $row['username'];
+				$password = $row['password'];
+
+			}
+
+			//var_dump($provided_username == $username);
+
+			if ($provided_username == $username and $provided_password == $password) {
+				echo true;
+			} else {
+				echo false;
+			}
 
 		} else {
 
