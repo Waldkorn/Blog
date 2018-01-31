@@ -12,6 +12,7 @@ function loginBlogger() {
 
 	if (checkLogin(username, password)) {
 		document.getElementById('user-interface').style.display = "none";
+		document.getElementById('add-category').style.display = "none";
 		document.getElementById('blogger-interface').style.display = "block";
 		navigateTo('create-article');
 	}
@@ -20,7 +21,6 @@ function loginBlogger() {
 function checkLogin(username, password) {
 	request.open("GET", "api.php?username=" + username + "&password=" + password, false);
 	request.send();
-	console.log(request);
 	if (request.response === "1") {
 		return true;
 	} else {
@@ -29,6 +29,9 @@ function checkLogin(username, password) {
 }
 
 function displayContentByCategory(category) {
+
+	$("#content").toggle('fast');
+
 	request.open("GET", "api.php?category=" + category, false);
 	request.send();
 
@@ -37,4 +40,6 @@ function displayContentByCategory(category) {
 	response = JSON.parse(request.response);
 
 	displayBlogContent(response);
+
+	$("#content").toggle('fast');
 }

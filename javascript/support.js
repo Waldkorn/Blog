@@ -25,6 +25,35 @@ function navigateTo(contentToDisplay) {
 			
 		}
 
+		if (contentToDisplay == "add-category") {
+
+			request.open("get", "api.php?getcategories=yes", false);
+			request.send();
+
+			categories = JSON.parse(request.response);
+
+			contentWindow = document.getElementById('add-category');
+
+			contentWindow.innerHTML = "<table id='table'></table>";
+
+			for (i = 0 ; i < categories.length ; i++) {
+
+				tr = document.createElement("tr");
+				td = document.createElement("td");
+				txt = document.createTextNode(categories[i]);
+
+				td.appendChild(txt);
+				tr.appendChild(td);
+				document.getElementById('table').appendChild(tr);
+
+			}
+
+			contentWindow.innerHTML += "<input id='new-category' placeholder='Add new category...'>"
+
+			contentWindow.innerHTML += "<button onclick='createCategory()'>Add Category</button>"
+
+		}
+
 		if (currentContent != "") {
 			$("#" + currentContent).toggle('slow');
 		}
@@ -63,4 +92,11 @@ function displayCategories(categories) {
 	for (i = 0 ; i < categories.length ; i++) {
 		document.getElementById('categories').innerHTML += "<div class=category-element onclick=displayContentByCategory('" + categories[i] + "')>" + categories[i] + "</div>";
 	}
+}
+
+function createCategory() {
+	newCategory = document.getElementById('new-category').value;
+	console.log(newCategory);
+
+	//GA HIER MORGEN VERDER EWOUT, JE KAN HET!
 }
