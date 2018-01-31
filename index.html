@@ -108,9 +108,14 @@
 				<form id="create-article-form">
 
 					Category:
-					<input id="categories-message"> <br>
-					Write your message here:
-					<textarea id="write-message" rows=4 columns=200></textarea>
+					<select id="categories-message">
+						<option value="Lifestyle">Lifestyle</option>
+						<option value="Travel">Travel</option>
+						<option value="Cooking">Cooking</option>
+						<option value="Beauty">Beauty</option>
+						<option value="yoga">Yoga</option>
+					</select> <br><br>
+					<textarea id="write-message" rows=35 cols=160></textarea><br>
 
 					<button onclick="submitMessage()">Submit message</button>
 

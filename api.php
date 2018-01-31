@@ -38,29 +38,28 @@
 
 	function get_all_messages_from_API () {
 
-	$dsn = 'mysql:host=127.0.0.1;dbname=blogdb';
-	$user_name = 'root';
-	$pass_word = "";
+		$dsn = 'mysql:host=127.0.0.1;dbname=blogdb';
+		$user_name = 'root';
+		$pass_word = "";
 
-	$connection = new PDO($dsn, $user_name, $pass_word);
-	$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		$connection = new PDO($dsn, $user_name, $pass_word);
+		$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-	$sql = "SELECT * FROM blogposts";
+		$sql = "SELECT * FROM blogposts";
 
-	$result = $connection->query($sql);
+		$result = $connection->query($sql);
 
-	$answer = array();
+		$response = array();
 
-	foreach ($result as $row) {
-		$answer[] = array($row['id'], $row['categories'], $row['message']);
-			//$answer . $row['id'] . ",";
-	}
+		foreach ($result as $row) {
+			$response[] = array($row['id'], $row['categories'], $row['message']);
+		}
 
-	$json_answer = json_encode($answer);
+		$json_response = json_encode($response);
 
-	return $json_answer;
+		return $json_response;
 
-	$connection = null;
+		$connection = null;
 
 	}
 
@@ -74,13 +73,14 @@
 		$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 		try {
-		$sql = "INSERT INTO blogposts (categories, message) " . "VALUES ('$categories', '$message')";
-		$connection->exec($sql);
-		echo $message . " added to database";
+			$sql = "INSERT INTO blogposts (categories, message) " . "VALUES ('$categories', '$message')";
+			$connection->exec($sql);
+			echo $message . " added to database";
 		}
 		catch(PDOException $e) {
-		echo $sql . "<br>" . $e->getMessage();
+			echo $sql . "<br>" . $e->getMessage();
 		}
+
 		$connection = null; // Close connection
 
 	}
