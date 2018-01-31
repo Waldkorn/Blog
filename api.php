@@ -5,7 +5,28 @@
 
 	if ($verb == 'GET') {
 		//returns message of specific category
-		if (isset($_GET['category'])) {
+		if (isset($_GET['getcategories'])) {
+
+			$dsn = 'mysql:host=127.0.0.1;dbname=blogdb';
+			$user_name = 'root';
+			$pass_word = "";
+
+			$connection = new PDO($dsn, $user_name, $pass_word);
+			$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+			$sql = "SELECT * FROM categories";
+
+			$result = $connection->query($sql);
+
+			$categories = [];
+
+			foreach ($result as $row) {
+
+				$categories[] = $row['category'];
+
+			}
+
+			echo json_encode($categories);
 
 		//checks if the login is correct
 		} elseif (isset($_GET['username']) and isset($_GET['password'])) {
@@ -31,13 +52,36 @@
 
 			}
 
-			//var_dump($provided_username == $username);
-
 			if ($provided_username == $username and $provided_password == $password) {
 				echo true;
 			} else {
 				echo false;
 			}
+
+		} elseif (isset($_GET['category'])) {
+
+			$category = $_GET['category'];
+
+			$dsn = 'mysql:host=127.0.0.1;dbname=blogdb';
+			$user_name = 'root';
+			$pass_word = "";
+
+			$connection = new PDO($dsn, $user_name, $pass_word);
+			$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+			$sql = "SELECT * FROM blogposts where categories = '$category'";
+
+			$result = $connection->query($sql);
+
+			$response = array();
+
+			foreach ($result as $row) {
+				$response[] = array($row['id'], $row['categories'], $row['message']);
+			}
+
+			$json_response = json_encode($response);
+
+			 echo $json_response;
 
 		} else {
 
