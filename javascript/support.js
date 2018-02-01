@@ -10,7 +10,7 @@ function navigateTo(contentToDisplay) {
 			request.open("GET", "api.php", false);
 			request.send();
 
-			console.log(request.response);
+			//console.log(request.response);
 
 			response = JSON.parse(request.response);
 
@@ -18,6 +18,8 @@ function navigateTo(contentToDisplay) {
 
 			request.open("get", "api.php?getcategories=yes", false);
 			request.send();
+
+			//console.log(request.response);
 
 			categories = JSON.parse(request.response);
 
@@ -39,11 +41,11 @@ function navigateTo(contentToDisplay) {
 
 			categories = JSON.parse(request.response);
 
-			document.getElementById("categories-message").innerHTML = "<option value=" + categories[0] + ">" + categories[0] + "</option>";
+			document.getElementById("categories-message").innerHTML = "<option value=" + categories[0][1] + ">" + categories[0][1] + "</option>";
 			
 			for (i = 1 ; i < categories.length ; i++) {
 
-				document.getElementById("categories-message").innerHTML += "<option value=" + categories[i] + ">" + categories[i] + "</option>";
+				document.getElementById("categories-message").innerHTML += "<option value=" + categories[i][1] + ">" + categories[i][1] + "</option>";
 
 			}
 
@@ -85,7 +87,8 @@ function submitMessage() {
 function displayCategories(categories) {
 	document.getElementById('categories').innerHTML = "";
 	for (i = 0 ; i < categories.length ; i++) {
-		document.getElementById('categories').innerHTML += "<div class=category-element onclick=displayContentByCategory('" + categories[i] + "')>" + categories[i] + "</div>";
+		document.getElementById('categories').innerHTML += 
+		"<div class=category-element onclick=displayContentByCategory('" + categories[i][1] + "')>" + categories[i][1] + "</div>";
 	}
 }
 
@@ -104,7 +107,17 @@ function refreshCategoriesForBlogger() {
 	request.open("get", "api.php?getcategories=yes", false);
 	request.send();
 
-	categories = JSON.parse(request.response);
+	categoriesObject = JSON.parse(request.response);
+
+	console.log(categoriesObject);
+
+	categories = [];
+
+	for (i = 0 ; i < categoriesObject.length ; i++) {
+		categories[i] = categoriesObject[i][1];
+	}
+
+	displayCategories(categories);
 
 	contentWindow = document.getElementById('add-category');
 
@@ -119,6 +132,7 @@ function refreshCategoriesForBlogger() {
 		td.appendChild(txt);
 		tr.appendChild(td);
 		document.getElementById('table').appendChild(tr);
+		
 	}
 
 	contentWindow.innerHTML += "<input id='new-category' placeholder='Add new category...'>";

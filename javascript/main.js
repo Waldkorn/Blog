@@ -21,6 +21,9 @@ function loginBlogger() {
 function checkLogin(username, password) {
 	request.open("GET", "api.php?username=" + username + "&password=" + password, false);
 	request.send();
+
+	console.log(request.response);
+
 	if (request.response === "1") {
 		return true;
 	} else {
