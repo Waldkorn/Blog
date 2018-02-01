@@ -78,7 +78,7 @@ function displayBlogContent(content) {
 //post een message naar de sever
 function submitMessage() {
 	categories = document.getElementById("categories-message").value;
-	message = document.getElementById("write-message").value;
+	message = tinymce.get('write-message').getContent({format: 'raw'});
 
 	request.open("POST", "api.php?categories=" + categories + "&message=" + message, false);
 	request.send();
@@ -132,7 +132,7 @@ function refreshCategoriesForBlogger() {
 		td.appendChild(txt);
 		tr.appendChild(td);
 		document.getElementById('table').appendChild(tr);
-		
+
 	}
 
 	contentWindow.innerHTML += "<input id='new-category' placeholder='Add new category...'>";

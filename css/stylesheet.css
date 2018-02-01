@@ -159,6 +159,9 @@ body {
 	border-color: #0093ec;
 
 	float: right;
+	
+	overflow-y: scroll;
+	overflow-x: hidden;
 }
 
 #create-article {

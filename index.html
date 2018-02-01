@@ -138,8 +138,6 @@
 
 		<div id="add-category" class="content">
 
-			knoekie
-
 		</div>
 
 	</div>
@@ -147,6 +145,19 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
 	<script type="text/javascript" src="javascript/support.js"></script>
 	<script type="text/javascript" src="javascript/main.js"></script>
+	<script src="//tinymce.cachefly.net/4.0/tinymce.min.js"></script>
+	<script>
+	        tinymce.init({
+	            selector: "textarea",
+	            plugins: [
+	                "advlist autolink lists link image charmap print preview anchor",
+	                "searchreplace visualblocks code fullscreen",
+	                "insertdatetime media table contextmenu paste"
+	            ],
+	            toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
+	        });
+	</script>
+
 
 </body>
 
