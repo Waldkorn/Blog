@@ -12,6 +12,8 @@ function navigateTo(contentToDisplay) {
 
 			//console.log(request.response);
 
+			//console.log(request.response);
+
 			response = JSON.parse(request.response);
 
 			displayBlogContent(response);
@@ -65,23 +67,41 @@ function navigateTo(contentToDisplay) {
 
 function displayBlogContent(content) {
 	//meest recente content komt bovenaan te staan
-	content.reverse();
+
+	//console.log(content);
+
+	content.sort(sortFunction);
+
+	//content.reverse();
+	highestid = 5000000000;
+
+	console.log(content);
 
 	document.getElementById('content').innerHTML = "";
-	for (i = 0 ; i < content.length ; i++) {
-		document.getElementById('content').innerHTML += "<div class='blogpost' id=blogpost" + content[i][0] + "></div>";
-		document.getElementById('blogpost' + content[i][0]).innerHTML = "<div class='blogpostcategory'>Category: " + content[i][1] + "</div>";
-		document.getElementById('blogpost' + content[i][0]).innerHTML += "<div class='blogpost-message'>" + content[i][2] + "</div>";
+	for (i = content.length - 1 ; i > 0 ; i--) {
+		console.log(content[i]);
+		if (content[i][0] < highestid) {
+			document.getElementById('content').innerHTML += "<div class='blogpost' id=blogpost" + content[i][0] + "></div>";
+			document.getElementById('blogpost' + content[i][0]).innerHTML = "<div class='blogpostcategory' id='blogpostcategory" + content[i][0] + "'>" + content[i][1] + "</div>";
+			document.getElementById('blogpost' + content[i][0]).innerHTML += "<div class='blogpost-message'>" + content[i][2] + "</div>";
+			highestid = content[i][0];
+			console.log("greater than");
+		} else if (content[i][0] == highestid) {
+			document.getElementById("blogpostcategory" + content[i][0]).innerHTML += ", " + content[i][1];
+			console.log("equals");
+		}
 	}
 }
 
 //post een message naar de sever
 function submitMessage() {
-	categories = document.getElementById("categories-message").value;
+	categories = categoriesToAdd;
 	message = tinymce.get('write-message').getContent({format: 'raw'});
 
 	request.open("POST", "api.php?categories=" + categories + "&message=" + message, false);
 	request.send();
+
+	console.log(request.response);
 }
 
 function displayCategories(categories) {
@@ -109,8 +129,6 @@ function refreshCategoriesForBlogger() {
 
 	categoriesObject = JSON.parse(request.response);
 
-	console.log(categoriesObject);
-
 	categories = [];
 
 	for (i = 0 ; i < categoriesObject.length ; i++) {
@@ -119,11 +137,13 @@ function refreshCategoriesForBlogger() {
 
 	displayCategories(categories);
 
+
 	contentWindow = document.getElementById('add-category');
 
 	contentWindow.innerHTML = "<table id='table'></table>";
 
 	for (i = 0 ; i < categories.length ; i++) {
+
 
 		tr = document.createElement("tr");
 		td = document.createElement("td");
@@ -133,9 +153,19 @@ function refreshCategoriesForBlogger() {
 		tr.appendChild(td);
 		document.getElementById('table').appendChild(tr);
 
+
 	}
 
 	contentWindow.innerHTML += "<input id='new-category' placeholder='Add new category...'>";
 
 	contentWindow.innerHTML += "<button onclick='createCategory()'>Add Category</button>";
+}
+
+function sortFunction(a, b) {
+    if (parseInt(a[0]) === parseInt(b[0])) {
+        return 0;
+    }
+    else {
+        return (parseInt(a[0]) < parseInt(b[0])) ? -1 : 1;
+    }
 }

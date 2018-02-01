@@ -50,7 +50,9 @@
 			$connection = new PDO($dsn, $user_name, $pass_word);
 			$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-			$sql = "SELECT b.id, c.category, b.message FROM blogposts b, categories c where c.category = '$category' AND b.category_id = c.id";
+			$sql = "SELECT b.id, c.category, b.message FROM blogposts b, categories c, blogpost_categories bc 
+					where bc.blogpost_id = b.id AND bc.category_id = c.id AND
+					c.category = '$category'";
 
 			$result = $connection->query($sql);
 
@@ -105,7 +107,7 @@
 		$connection = new PDO($dsn, $user_name, $pass_word);
 		$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-		$sql = "SELECT b.id, b.message, c.category FROM blogposts b, categories c WHERE b.category_id = c.id";
+		$sql = "SELECT b.id, b.message, c.category FROM blogposts b, categories c, blogpost_categories bc WHERE bc.category_id = c.id AND bc.blogpost_id = b.id";
 
 		$result = $connection->query($sql);
 
@@ -133,15 +135,29 @@
 		$connection = new PDO($dsn, $user_name, $pass_word);
 		$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-		$category_id = get_category_id($categories);
+		$category_id_list = get_category_id($categories);
 
-		try {
-			$sql = "INSERT INTO blogposts (category_id, message) " . "VALUES ('$category_id', '$message')";
-			$connection->exec($sql);
-			echo $message . " added to database";
+		//var_dump($category_id_list);
+
+		$sql = "INSERT INTO blogposts (message) " . "VALUES ('$message')";
+		//echo $message . " added to database";
+		$connection->exec($sql);
+
+		$sql = "SELECT blogposts.id FROM blogposts";
+
+		$result = $connection->query($sql);
+
+		$ids=[];
+
+		foreach ($result as $row) {
+			$ids[] = $row['id'];
 		}
-		catch(PDOException $e) {
-			echo $sql . "<br>" . $e->getMessage();
+
+		$last_id = $ids[count($ids) - 1];
+
+		for ($i = 0 ; $i < count($category_id_list) ; $i++) {
+			$sql = "INSERT INTO blogpost_categories (blogpost_id, category_id) " . "VALUES ('$last_id', '$category_id_list[$i]')";
+			$connection->exec($sql);
 		}
 
 		$connection = null; // Close connection
@@ -197,10 +213,18 @@
 
 		$category_list = get_categories_from_database();
 
+		$category_id_list = [];
+
+		$categories = explode(",", $categories);
+
 		for ($i = 0 ; $i < count($category_list) ; $i++) {
-			if ($categories == $category_list[$i][1]) {
-				return $category_list[$i][0];
+			for ($j = 0 ; $j < count($categories) ; $j++) {
+				if ($categories[$j] == $category_list[$i][1]) {
+					$category_id_list[] = $category_list[$i][0];
+				}
 			}
 		}
+
+		return $category_id_list;
 	}
 ?>

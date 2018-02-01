@@ -1,3 +1,5 @@
+var categoriesToAdd = [];
+
 function loginUser() {
 	document.getElementById('user-interface').style.display = "block";
 	navigateTo('home-content');
@@ -38,11 +40,39 @@ function displayContentByCategory(category) {
 	request.open("GET", "api.php?category=" + category, false);
 	request.send();
 
-	console.log(request.response);
-
 	response = JSON.parse(request.response);
 
 	displayBlogContent(response);
 
 	$("#content").toggle('fast');
+}
+
+function addCategoryToMessage() {
+
+	category = document.getElementById("categories-message").value;
+
+	categoriesToAdd.push(category);
+
+	request.open("get", "api.php?getcategories=yes", false);
+	request.send();
+
+	categories = JSON.parse(request.response);
+	categoriesWithoutUsedOnes = [];
+
+	for (i = 0 ; i < categories.length ; i++) {
+
+		if (!categoriesToAdd.includes(categories[i][1]) && categories[i][1]!= "undefined") {
+			categoriesWithoutUsedOnes.push(categories[i][1])
+		}
+
+	}
+
+	document.getElementById("categories-message").innerHTML = "<option value=" + categoriesWithoutUsedOnes[0] + ">" + categoriesWithoutUsedOnes[0] + "</option>";
+	
+	for (i = 1 ; i < categoriesWithoutUsedOnes.length ; i++) {
+
+		document.getElementById("categories-message").innerHTML += "<option value=" + categoriesWithoutUsedOnes[i] + ">" + categoriesWithoutUsedOnes[i] + "</option>";
+
+	}
+
 }

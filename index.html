@@ -127,10 +127,12 @@
 
 				Category:
 				<select id="categories-message">
-				</select> <br><br>
+				</select>
+				<div id="inserted-categories"></div>
+				<button id="add-category-button" onclick="addCategoryToMessage(); return false;">Add category</button><br><br>
 				<textarea id="write-message" rows=35 cols=160></textarea><br>
 
-				<button onclick="submitMessage()">Submit message</button>
+				<button onclick="submitMessage();">Submit message</button>
 
 			</form>
 
@@ -154,8 +156,11 @@
 	                "searchreplace visualblocks code fullscreen",
 	                "insertdatetime media table contextmenu paste"
 	            ],
-	            toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
-	        });
+	            toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
+	            height: "380",
+			    resize: false
+			});
+
 	</script>
 
 

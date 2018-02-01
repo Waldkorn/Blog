@@ -176,10 +176,6 @@ body {
 	border-color: #0093ec;
 }
 
-textarea {
-   resize: none;
-}
-
 .blogpost {
 	border-style: solid;
 	border-width: 1px;
