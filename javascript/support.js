@@ -27,30 +27,25 @@ function navigateTo(contentToDisplay) {
 
 		if (contentToDisplay == "add-category") {
 
+			refreshCategoriesForBlogger();
+
+		}
+
+		if (contentToDisplay == "create-article") {
+
+
 			request.open("get", "api.php?getcategories=yes", false);
 			request.send();
 
 			categories = JSON.parse(request.response);
 
-			contentWindow = document.getElementById('add-category');
+			document.getElementById("categories-message").innerHTML = "<option value=" + categories[0] + ">" + categories[0] + "</option>";
+			
+			for (i = 1 ; i < categories.length ; i++) {
 
-			contentWindow.innerHTML = "<table id='table'></table>";
-
-			for (i = 0 ; i < categories.length ; i++) {
-
-				tr = document.createElement("tr");
-				td = document.createElement("td");
-				txt = document.createTextNode(categories[i]);
-
-				td.appendChild(txt);
-				tr.appendChild(td);
-				document.getElementById('table').appendChild(tr);
+				document.getElementById("categories-message").innerHTML += "<option value=" + categories[i] + ">" + categories[i] + "</option>";
 
 			}
-
-			contentWindow.innerHTML += "<input id='new-category' placeholder='Add new category...'>"
-
-			contentWindow.innerHTML += "<button onclick='createCategory()'>Add Category</button>"
 
 		}
 
@@ -96,7 +91,37 @@ function displayCategories(categories) {
 
 function createCategory() {
 	newCategory = document.getElementById('new-category').value;
-	console.log(newCategory);
 
-	//GA HIER MORGEN VERDER EWOUT, JE KAN HET!
+	request.open("POST", "api.php?category=" + newCategory, false);
+	request.send();
+
+	newCategory = "";
+
+	refreshCategoriesForBlogger();
+}
+
+function refreshCategoriesForBlogger() {
+	request.open("get", "api.php?getcategories=yes", false);
+	request.send();
+
+	categories = JSON.parse(request.response);
+
+	contentWindow = document.getElementById('add-category');
+
+	contentWindow.innerHTML = "<table id='table'></table>";
+
+	for (i = 0 ; i < categories.length ; i++) {
+
+		tr = document.createElement("tr");
+		td = document.createElement("td");
+		txt = document.createTextNode(categories[i]);
+
+		td.appendChild(txt);
+		tr.appendChild(td);
+		document.getElementById('table').appendChild(tr);
+	}
+
+	contentWindow.innerHTML += "<input id='new-category' placeholder='Add new category...'>";
+
+	contentWindow.innerHTML += "<button onclick='createCategory()'>Add Category</button>";
 }

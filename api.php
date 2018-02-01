@@ -93,12 +93,15 @@
 
 	} elseif ($verb == 'POST') {
 
-		var_dump(array(isset($_GET['categories']), isset($_GET['message'])));
-
 		if (isset($_GET['categories']) and (isset($_GET['message']))) {
 
 			http_response_code(200);
 			write_message_to_database($_GET['categories'], $_GET['message']);
+
+		} elseif (isset($_GET['category'])) {
+
+			http_response_code(201);
+			write_category_to_database($_GET['category']);
 
 		} else {
 
@@ -152,6 +155,28 @@
 			$sql = "INSERT INTO blogposts (categories, message) " . "VALUES ('$categories', '$message')";
 			$connection->exec($sql);
 			echo $message . " added to database";
+		}
+		catch(PDOException $e) {
+			echo $sql . "<br>" . $e->getMessage();
+		}
+
+		$connection = null; // Close connection
+
+	}
+
+	function write_category_to_database($category) {
+
+		$dsn = 'mysql:host=127.0.0.1;dbname=blogdb';
+		$user_name = 'root';
+		$pass_word = "";
+
+		$connection = new PDO($dsn, $user_name, $pass_word);
+		$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+		try {
+			$sql = "INSERT INTO categories (category) " . "VALUES ('$category')";
+			$connection->exec($sql);
+			echo $category . " added to database";
 		}
 		catch(PDOException $e) {
 			echo $sql . "<br>" . $e->getMessage();
