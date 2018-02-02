@@ -181,3 +181,15 @@ function refreshCategoriesForBlogger() {
 	contentWindow.innerHTML += "<button onclick='createCategory()'>Add Category</button>";
 
 }
+
+function removeArticle(id) {
+
+	if (confirm("Are you sure you want to remove blogpost with id " + id + " from the database?")  == true) {
+
+		request.open("DELETE", "api.php?id=" + id, false);
+		request.send();
+
+		console.log(request.response);
+
+	}
+}

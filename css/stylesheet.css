@@ -17,6 +17,19 @@ body {
 	margin: 0px 5px;
 }
 
+#remove-article {
+	height: 600px;
+
+	width: 1198px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #0093ec;
+
+	display: none;
+
+	overflow-y: scroll;
+}
+
 #user-interface {
 	width: 1200px;
 	padding: 3px;
@@ -189,4 +202,14 @@ body {
 	border-bottom-style: solid;
 	border-bottom-width: 1px;
 	border-color: #0093EC;
+}
+
+#remove-article-table td {
+	overflow-y: hidden;
+}
+
+.remove:hover {
+	color: #0093EC;
+	text-decoration: underline solid #0093EC;
+	cursor:pointer;
 }

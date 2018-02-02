@@ -75,6 +75,11 @@
 
 		}
 
+	} elseif ($verb == 'DELETE') {
+
+		http_response_code(200);
+		remove_message_from_database($_GET['id']);
+
 	} else {
 
 		http_response_code(400);
@@ -254,5 +259,21 @@
 				c.category = '$category'";
 
 		return $connection->query($sql);
+	}
+
+	function remove_message_from_database($id) {
+
+		global $dsn;
+		global $user_name;
+		global $pass_word;
+
+		$connection = new PDO($dsn, $user_name, $pass_word);
+		$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+		$sql = "DELETE FROM blogpost_categories WHERE blogpost_categories.blogpost_id = '$id';
+				DELETE FROM blogposts WHERE blogposts.id = '$id';";
+
+		$connection->exec($sql);
+
 	}
 ?>

@@ -13,15 +13,11 @@ function navigateTo(contentToDisplay) {
 			categoryContent = getAllCategoriesFromAPI();
 			displayCategories(categoryContent);
 			
-		}
-
-		if (contentToDisplay == "add-category") {
+		} else if (contentToDisplay == "add-category") {
 
 			refreshCategoriesForBlogger();
 
-		}
-
-		if (contentToDisplay == "create-article") {
+		} else if (contentToDisplay == "create-article") {
 
 			categories = getAllCategoriesFromAPI();
 
@@ -31,6 +27,32 @@ function navigateTo(contentToDisplay) {
 			for (i = 1 ; i < categories.length ; i++) {
 
 				document.getElementById("categories-message").innerHTML += "<option value=" + categories[i][1] + ">" + categories[i][1] + "</option>";
+
+			}
+
+		} else if (contentToDisplay == "remove-article") {
+
+			//maakt een tabel met alle blogposts
+			blogposts = getAllBlogContentFromAPI();
+			blogposts.sort(sortFunction);
+			maxid = -1;
+			blogpostsNonDuplicates = [];
+
+			for (i = 0 ; i < blogposts.length ; i++) {
+				if (parseInt(blogposts[i][0]) > maxid) {
+					blogpostsNonDuplicates.push(blogposts[i]);
+					maxid = parseInt(blogposts[i][0]);
+				}
+			}
+
+			table = document.getElementById("remove-article-table");
+
+			for (i = 0 ; i < blogpostsNonDuplicates.length ; i++) {
+
+				table.innerHTML += "<tr>";
+				table.innerHTML += "<td>" + blogpostsNonDuplicates[i][0] + "</td><td>" + blogpostsNonDuplicates[i][2].substring(0,180) 
+									+ "...</td><td><div class='remove' onclick='removeArticle(" + blogpostsNonDuplicates[i][0] + ")'>Remove</td>";
+				table.innerHTML += "</tr>";
 
 			}
 
