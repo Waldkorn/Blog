@@ -49,12 +49,20 @@ function checkLogin(username, password) {
 function submitMessage() {
 
 	categories = categoriesToAdd;
-	message = tinymce.get('write-message').getContent({format: 'raw'});
+	console.log(categories);
 
-	request.open("POST", "api.php?categories=" + categories + "&message=" + message, false);
-	request.send();
+	if (categories.length == 0) {
 
-	console.log(request.response);
+		alert("Please provide at least one category");
+
+	} else {
+
+		message = tinymce.get('write-message').getContent({format: 'raw'});
+
+		request.open("POST", "api.php?categories=" + categories + "&message=" + message, false);
+		request.send();
+
+	}
 
 }
 
@@ -189,7 +197,9 @@ function removeArticle(id) {
 		request.open("DELETE", "api.php?id=" + id, false);
 		request.send();
 
-		console.log(request.response);
+		alert("Article succesfully deleted");
+
+		navigateTo("create-article");
 
 	}
 }

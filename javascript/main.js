@@ -47,6 +47,8 @@ function navigateTo(contentToDisplay) {
 
 			table = document.getElementById("remove-article-table");
 
+			table.innerHTML = "";
+
 			for (i = 0 ; i < blogpostsNonDuplicates.length ; i++) {
 
 				table.innerHTML += "<tr>";
