@@ -3,6 +3,10 @@
 	header("Content-Type:application/json");
 	$verb = $_SERVER['REQUEST_METHOD'];
 
+	$dsn = 'mysql:host=127.0.0.1;dbname=blogdb';
+	$user_name = 'root';
+	$pass_word = "";
+
 	if ($verb == 'GET') {
 		//returns message of specific category
 		if (isset($_GET['getcategories'])) {
@@ -12,65 +16,44 @@
 		//checks if the login is correct
 		} elseif (isset($_GET['username']) and isset($_GET['password'])) {
 
+			http_response_code(200);
+
 			$provided_username = $_GET['username'];
 			$provided_password = $_GET['password'];
 
-			$dsn = 'mysql:host=127.0.0.1;dbname=blogdb';
-			$user_name = 'root';
-			$pass_word = "";
+			$credentials = get_blogger_credentials_from_database();
 
-			$connection = new PDO($dsn, $user_name, $pass_word);
-			$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			if ($provided_username == $credentials['username'] and $provided_password == $credentials['password']) {
 
-			$sql = "SELECT * FROM bloggercredentials where id = 1";
-
-			$result = $connection->query($sql);
-
-			foreach ($result as $row) {
-
-				$username = $row['username'];
-				$password = $row['password'];
-
-			}
-
-			if ($provided_username == $username and $provided_password == $password) {
 				echo true;
+
 			} else {
+
 				echo false;
+
 			}
 
+		// Gets all messages from database with specific category
 		} elseif (isset($_GET['category'])) {
 
-			$category = $_GET['category'];
+			http_response_code(200);
 
-			$dsn = 'mysql:host=127.0.0.1;dbname=blogdb';
-			$user_name = 'root';
-			$pass_word = "";
-
-			$connection = new PDO($dsn, $user_name, $pass_word);
-			$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-			$sql = "SELECT b.id, c.category, b.message FROM blogposts b, categories c, blogpost_categories bc 
-					where bc.blogpost_id = b.id AND bc.category_id = c.id AND
-					c.category = '$category'";
-
-			$result = $connection->query($sql);
+			$messages = get_messages_from_database_by_category($_GET['category']);
 
 			$response = array();
 
-			foreach ($result as $row) {
+			foreach ($messages as $row) {
+
 				$response[] = array($row['id'], $row['category'], $row['message']);
+
 			}
 
-			$json_response = json_encode($response);
-
-			 echo $json_response;
+			echo json_encode($response);
 
 		} else {
 
 			http_response_code(200);
-			$json_response = get_all_messages_from_API();
-			echo $json_response;
+			echo get_all_messages_from_API();
 
 		}
 
@@ -83,7 +66,7 @@
 
 		} elseif (isset($_GET['category'])) {
 
-			http_response_code(201);
+			http_response_code(200);
 			write_category_to_database($_GET['category']);
 
 		} else {
@@ -100,9 +83,9 @@
 
 	function get_all_messages_from_API() {
 
-		$dsn = 'mysql:host=127.0.0.1;dbname=blogdb';
-		$user_name = 'root';
-		$pass_word = "";
+		global $dsn;
+		global $user_name;
+		global $pass_word;
 
 		$connection = new PDO($dsn, $user_name, $pass_word);
 		$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -127,10 +110,9 @@
 
 	function write_message_to_database($categories, $message) {
 
-
-		$dsn = 'mysql:host=127.0.0.1;dbname=blogdb';
-		$user_name = 'root';
-		$pass_word = "";
+		global $dsn;
+		global $user_name;
+		global $pass_word;
 
 		$connection = new PDO($dsn, $user_name, $pass_word);
 		$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -166,9 +148,9 @@
 
 	function write_category_to_database($category) {
 
-		$dsn = 'mysql:host=127.0.0.1;dbname=blogdb';
-		$user_name = 'root';
-		$pass_word = "";
+		global $dsn;
+		global $user_name;
+		global $pass_word;
 
 		$connection = new PDO($dsn, $user_name, $pass_word);
 		$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -187,26 +169,28 @@
 	}
 
 	function get_categories_from_database() {
-		$dsn = 'mysql:host=127.0.0.1;dbname=blogdb';
-			$user_name = 'root';
-			$pass_word = "";
 
-			$connection = new PDO($dsn, $user_name, $pass_word);
-			$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		global $dsn;
+		global $user_name;
+		global $pass_word;
 
-			$sql = "SELECT * FROM categories";
+		$connection = new PDO($dsn, $user_name, $pass_word);
+		$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-			$result = $connection->query($sql);
+		$sql = "SELECT * FROM categories";
 
-			$categories = [];
+		$result = $connection->query($sql);
 
-			foreach ($result as $row) {
+		$categories = [];
 
-				$categories[] = array($row['id'], $row['category']);
+		foreach ($result as $row) {
 
-			}
+			$categories[] = array($row['id'], $row['category']);
 
-			return $categories;
+		}
+
+		return $categories;
+
 	}
 
 	function get_category_id($categories) {
@@ -226,5 +210,49 @@
 		}
 
 		return $category_id_list;
+	}
+
+	// Gets blogger credentials from the database
+	function get_blogger_credentials_from_database() {
+
+		global $dsn;
+		global $user_name;
+		global $pass_word;
+
+		$connection = new PDO($dsn, $user_name, $pass_word);
+		$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+		$sql = "SELECT * FROM bloggercredentials where id = 1";
+
+		$result = $connection->query($sql);
+
+		foreach ($result as $row) {
+
+			$credentials = array(
+
+				"username" => $row['username'],
+				"password" => $row['password']
+
+			);	
+
+		}
+
+		return $credentials;
+
+	}
+
+	function get_messages_from_database_by_category($category) {
+		global $dsn;
+		global $user_name;
+		global $pass_word;
+
+		$connection = new PDO($dsn, $user_name, $pass_word);
+		$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+		$sql = "SELECT b.id, c.category, b.message FROM blogposts b, categories c, blogpost_categories bc 
+				where bc.blogpost_id = b.id AND bc.category_id = c.id AND
+				c.category = '$category'";
+
+		return $connection->query($sql);
 	}
 ?>

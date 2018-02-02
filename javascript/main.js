@@ -1,38 +1,86 @@
-var categoriesToAdd = [];
-
-function loginUser() {
-	document.getElementById('user-interface').style.display = "block";
-	navigateTo('home-content');
-}
-
 loginUser();
 
+// Navigates to a specific page
+function navigateTo(contentToDisplay) {
+
+	if (currentContent != contentToDisplay) {
+
+		if (contentToDisplay == 'blog-content') {
+
+			blogContent = getAllBlogContentFromAPI();
+			displayBlogContent(blogContent);
+
+			categoryContent = getAllCategoriesFromAPI();
+			displayCategories(categoryContent);
+			
+		}
+
+		if (contentToDisplay == "add-category") {
+
+			refreshCategoriesForBlogger();
+
+		}
+
+		if (contentToDisplay == "create-article") {
+
+			categories = getAllCategoriesFromAPI();
+
+			// Creates drop down menu of all the categories for blogger
+			document.getElementById("categories-message").innerHTML = "<option value=" + categories[0][1] + ">" + categories[0][1] + "</option>";
+			
+			for (i = 1 ; i < categories.length ; i++) {
+
+				document.getElementById("categories-message").innerHTML += "<option value=" + categories[i][1] + ">" + categories[i][1] + "</option>";
+
+			}
+
+		}
+
+		if (currentContent != "") {
+
+			// Hides the content it is currently showing
+			$("#" + currentContent).toggle('slow');
+
+		}
+
+		// Shows the content you are navigating to
+		$("#" + contentToDisplay).toggle('slow');
+
+		currentContent = contentToDisplay;
+
+	}
+
+}
+
+// Navigates the page to the user interface
+function loginUser() {
+
+	document.getElementById('user-interface').style.display = "block";
+	navigateTo('home-content');
+
+}
+// Checks blogger credentials and logs in the blogger if the API returns true
 function loginBlogger() {
 
 	username = document.getElementById("username").value;
 	password = document.getElementById("password").value;
 
 	if (checkLogin(username, password)) {
+
 		document.getElementById('user-interface').style.display = "none";
 		document.getElementById('add-category').style.display = "none";
 		document.getElementById('blogger-interface').style.display = "block";
 		navigateTo('create-article');
-	}
-}
 
-function checkLogin(username, password) {
-	request.open("GET", "api.php?username=" + username + "&password=" + password, false);
-	request.send();
-
-	console.log(request.response);
-
-	if (request.response === "1") {
-		return true;
 	} else {
-		return false;
+
+		alert("Please provide valid login credentials");
+
 	}
+	
 }
 
+// Displays blogposts depending on the category provided
 function displayContentByCategory(category) {
 
 	$("#content").toggle('fast');
@@ -45,34 +93,5 @@ function displayContentByCategory(category) {
 	displayBlogContent(response);
 
 	$("#content").toggle('fast');
-}
-
-function addCategoryToMessage() {
-
-	category = document.getElementById("categories-message").value;
-
-	categoriesToAdd.push(category);
-
-	request.open("get", "api.php?getcategories=yes", false);
-	request.send();
-
-	categories = JSON.parse(request.response);
-	categoriesWithoutUsedOnes = [];
-
-	for (i = 0 ; i < categories.length ; i++) {
-
-		if (!categoriesToAdd.includes(categories[i][1]) && categories[i][1]!= "undefined") {
-			categoriesWithoutUsedOnes.push(categories[i][1])
-		}
-
-	}
-
-	document.getElementById("categories-message").innerHTML = "<option value=" + categoriesWithoutUsedOnes[0] + ">" + categoriesWithoutUsedOnes[0] + "</option>";
-	
-	for (i = 1 ; i < categoriesWithoutUsedOnes.length ; i++) {
-
-		document.getElementById("categories-message").innerHTML += "<option value=" + categoriesWithoutUsedOnes[i] + ">" + categoriesWithoutUsedOnes[i] + "</option>";
-
-	}
 
 }
