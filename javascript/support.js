@@ -62,6 +62,8 @@ function submitMessage() {
 		request.open("POST", "api.php?categories=" + categories + "&message=" + message, false);
 		request.send();
 
+		location.reload();
+
 	}
 
 }
