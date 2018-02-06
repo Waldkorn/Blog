@@ -113,6 +113,12 @@
 
 			</div>
 
+			<div class="nav-element" onclick="navigateTo('add-abbreviation')">
+
+				<p>Add Abbreviation</p>
+
+			</div>
+
 		</div>
 
 		<div id="create-article">
@@ -144,11 +150,28 @@
 
 		</div>
 
+		<div id="add-abbreviation" class="content">
+
+			<table id="abbreviation-list">
+
+			</table>
+
+			<form action="api.php" method="POST">
+
+				<input id="abbreviation-input" placeholder="abbreviation" name="abbreviation"><br>
+				<input id="abbreviation-text-input" placeholder="text" name="text"><br>
+				<button>Submit</button>
+
+			</form>
+
+		</div>
+
 	</div>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
 	<script type="text/javascript" src="javascript/support.js"></script>
 	<script type="text/javascript" src="javascript/main.js"></script>
+	<!--
 	<script src="//tinymce.cachefly.net/4.0/tinymce.min.js"></script>
 	<script>
 	        tinymce.init({
@@ -164,6 +187,7 @@
 			});
 
 	</script>
+-->
 
 
 </body>

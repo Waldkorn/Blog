@@ -50,6 +50,12 @@
 
 			echo json_encode($response);
 
+		} elseif (isset($_GET['abbreviations'])) {
+
+			$abbreviations = get_abbreviations_from_database();
+
+			echo json_encode($abbreviations);
+
 		} else {
 
 			http_response_code(200);
@@ -69,8 +75,14 @@
 			http_response_code(200);
 			write_category_to_database($_GET['category']);
 
+		} elseif (isset($_POST['abbreviation']) and isset($_POST['text'])) {
+
+			http_response_code(200);
+			write_abbreviation_to_database($_POST['abbreviation'], $_POST['text']);
+
 		} else {
 
+			echo "not so great succes :(";
 			http_response_code(400);
 
 		}
@@ -274,6 +286,51 @@
 				DELETE FROM blogposts WHERE blogposts.id = '$id';";
 
 		$connection->exec($sql);
+
+	}
+
+	function get_abbreviations_from_database() {
+
+		global $dsn;
+		global $user_name;
+		global $pass_word;
+
+		$connection = new PDO($dsn, $user_name, $pass_word);
+		$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+		$sql = "SELECT s.abbreviation, s.text FROM shortcuts s";
+
+		$result = $connection->query($sql);
+
+		$abbreviations = array("bararpadpads" => "testestsegtst");
+
+		foreach ($result as $row) {
+
+			$addition = array($row['abbreviation'] => $row['text']);
+
+			$abbreviations = array_merge($abbreviations, $addition);
+
+		}
+
+		return $abbreviations;
+
+	}
+
+	function write_abbreviation_to_database($abbreviation, $text) {
+
+		global $dsn;
+		global $user_name;
+		global $pass_word;
+
+		$connection = new PDO($dsn, $user_name, $pass_word);
+		$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+		$sql = "INSERT INTO shortcuts (abbreviation, text)" . "VALUES ('$abbreviation', '$text')";
+		$connection->exec($sql);
+
+		echo $abbreviation . " : " . $text . " added to database";
+
+		$connection = null; // Close connection
 
 	}
 ?>

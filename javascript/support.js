@@ -57,7 +57,8 @@ function submitMessage() {
 
 	} else {
 
-		message = tinymce.get('write-message').getContent({format: 'raw'});
+		//message = tinymce.get('write-message').getContent({format: 'raw'});
+		message = document.getElementById('write-message').value;
 
 		request.open("POST", "api.php?categories=" + categories + "&message=" + message, false);
 		request.send();
@@ -204,4 +205,12 @@ function removeArticle(id) {
 		navigateTo("create-article");
 
 	}
+}
+
+function getListOfAbbreviations() {
+
+	request.open("GET", "api.php?abbreviations=yes", false);
+	request.send();
+
+	return JSON.parse(request.response);
 }
