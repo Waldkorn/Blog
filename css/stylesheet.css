@@ -11,6 +11,24 @@ body {
 	padding: 0px;
 }
 
+.comments {
+
+	background-color: #0093ec;
+	display: inline-block;
+	margin: 2px;
+	border-radius: 2px;
+
+}
+
+.comment {
+
+	margin: 5px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+
+}
+
 #blogger-picture {
 	width: 150px;
 	float: right;
@@ -28,6 +46,21 @@ body {
 	display: none;
 
 	overflow-y: scroll;
+}
+
+#remove-comment {
+
+	height: 600px;
+
+	width: 1198px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #0093ec;
+
+	display: none;
+
+	overflow-y: scroll;
+
 }
 
 #add-abbreviation {
@@ -225,4 +258,12 @@ body {
 	color: #0093EC;
 	text-decoration: underline solid #0093EC;
 	cursor:pointer;
+}
+
+.remove-comment-cell:hover {
+
+	color: #0093EC;
+	text-decoration: underline solid #0093EC;
+	cursor:pointer;
+
 }

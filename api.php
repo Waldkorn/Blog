@@ -56,6 +56,13 @@
 
 			echo json_encode($abbreviations);
 
+		} elseif (isset($_GET['comments'])) {
+
+			http_response_code(200);
+			$comments = get_comments_from_database();
+
+			echo json_encode($comments);
+
 		} else {
 
 			http_response_code(200);
@@ -80,6 +87,21 @@
 			http_response_code(200);
 			write_abbreviation_to_database($_POST['abbreviation'], $_POST['text']);
 
+		} elseif (isset($_GET['id']) and isset($_GET['comment'])) {
+
+			http_response_code(200);
+			write_comment_to_database($_GET['id'], $_GET['comment']);
+
+		} elseif (isset($_GET['commentremove']) and isset($_GET['id'])) {
+
+			http_response_code(200);
+			remove_comment_from_database($_GET['id']);
+
+		} elseif (isset($_GET['setcommentallowed']) and isset($_GET['id']) and isset($_GET['value'])) {
+
+			http_response_code(200);
+			allow_disallow_comments_for_post($_GET['id'], $_GET['value']);
+
 		} else {
 
 			echo "not so great succes :(";
@@ -89,8 +111,16 @@
 
 	} elseif ($verb == 'DELETE') {
 
-		http_response_code(200);
-		remove_message_from_database($_GET['id']);
+		if (isset($_GET['article']) and isset($_GET['id'])){
+
+			http_response_code(200);
+			remove_message_from_database($_GET['id']);
+
+		} else {
+
+			http_response_code(400);
+
+		}
 
 	} else {
 
@@ -107,14 +137,14 @@
 		$connection = new PDO($dsn, $user_name, $pass_word);
 		$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-		$sql = "SELECT b.id, b.message, c.category FROM blogposts b, categories c, blogpost_categories bc WHERE bc.category_id = c.id AND bc.blogpost_id = b.id";
+		$sql = "SELECT b.id, b.message, c.category, b.comments_allowed FROM blogposts b, categories c, blogpost_categories bc WHERE bc.category_id = c.id AND bc.blogpost_id = b.id";
 
 		$result = $connection->query($sql);
 
 		$response = array();
 
 		foreach ($result as $row) {
-			$response[] = array($row['id'], $row['category'], $row['message']);
+			$response[] = array($row['id'], $row['category'], $row['message'], $row['comments_allowed']);
 		}
 
 		$json_response = json_encode($response);
@@ -331,6 +361,86 @@
 		echo $abbreviation . " : " . $text . " added to database";
 
 		$connection = null; // Close connection
+
+	}
+
+	function get_comments_from_database() {
+
+		global $dsn;
+		global $user_name;
+		global $pass_word;
+
+		$connection = new PDO($dsn, $user_name, $pass_word);
+		$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+		$sql = "SELECT c.blogpost_id, c.comment, c.id FROM comments c";
+
+		$result = $connection->query($sql);
+
+		$comments = [];
+
+		foreach ($result as $row) {
+
+			$comments[] = array($row['blogpost_id'], $row['comment'], $row['id']);
+		}
+
+		return $comments;		
+
+	}
+
+	function write_comment_to_database($id, $comment) {
+
+		global $dsn;
+		global $user_name;
+		global $pass_word;
+
+		$connection = new PDO($dsn, $user_name, $pass_word);
+		$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+		$sql = "INSERT INTO comments (blogpost_id, comment)" . "VALUES ('$id', '$comment')";
+		$connection->exec($sql);
+
+		echo $comment . " added to database";
+
+		$connection = null; // Close connection
+
+	}
+
+	function remove_comment_from_database($id) {
+
+		global $dsn;
+		global $user_name;
+		global $pass_word;
+
+		$connection = new PDO($dsn, $user_name, $pass_word);
+		$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+		$sql = "DELETE FROM comments WHERE comments.id = '$id'";
+
+		$connection->exec($sql);
+
+	}
+
+	function allow_disallow_comments_for_post($id, $value) {
+
+		global $dsn;
+		global $user_name;
+		global $pass_word;
+
+		$connection = new PDO($dsn, $user_name, $pass_word);
+		$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+		if ($value === "true") {
+
+			$sql = "UPDATE blogposts SET comments_allowed = '1' WHERE id = '$id'";
+
+		} elseif ($value === 'false') {
+
+			$sql = "UPDATE blogposts SET comments_allowed = '0' WHERE id = '$id'";
+
+		}
+
+		$connection->exec($sql);
 
 	}
 ?>

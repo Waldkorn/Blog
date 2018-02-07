@@ -110,6 +110,8 @@ function displayBlogContent(content) {
 	highestid = Infinity;
 	document.getElementById('content').innerHTML = "";
 
+	comments = getCommentsFromServer();
+
 	for (i = content.length - 1 ; i > 0 ; i--) {
 
 		if (content[i][0] < highestid) {
@@ -118,6 +120,29 @@ function displayBlogContent(content) {
 			document.getElementById('blogpost' + content[i][0]).innerHTML = "<div class='blogpostcategory' id='blogpostcategory" + content[i][0] + "'>" + content[i][1] + "</div>";
 			document.getElementById('blogpost' + content[i][0]).innerHTML += "<div class='blogpost-message'>" + content[i][2] + "</div>";
 			highestid = content[i][0];
+
+			document.getElementById('content').innerHTML += "<div class='comments' id=comments" + content[i][0] + "></div>";
+
+			if (content[i][3] === "1") {
+
+				comments = getCommentsFromServer();
+
+				commentsForThisPost = getCommentsById(comments, content[i][0]);
+
+				for (j = 0 ; j < commentsForThisPost.length ; j++) {
+
+					document.getElementById('comments' + content[i][0]).innerHTML += "<div class='comment'>" + commentsForThisPost[j] + "</div>";
+
+				}
+
+				document.getElementById('comments' + content[i][0]).innerHTML += "<input id=post-comment" + content[i][0] + " placeholder='comment'></input>";
+				document.getElementById('comments' + content[i][0]).innerHTML += "<button onclick=postComment(" + content[i][0] + ")>Post comment</button>";
+
+			} else {
+
+				document.getElementById('comments' + content[i][0]).innerHTML = "<div class=nocomments>No comments allowed</div>"
+
+			}
 
 		} else if (content[i][0] == highestid) {
 
@@ -197,7 +222,7 @@ function removeArticle(id) {
 
 	if (confirm("Are you sure you want to remove blogpost with id " + id + " from the database?")  == true) {
 
-		request.open("DELETE", "api.php?id=" + id, false);
+		request.open("DELETE", "api.php?article=yes&id=" + id, false);
 		request.send();
 
 		alert("Article succesfully deleted");
@@ -213,4 +238,85 @@ function getListOfAbbreviations() {
 	request.send();
 
 	return JSON.parse(request.response);
+}
+
+function getCommentsFromServer() {
+
+	request.open("get", "api.php?comments=yes", false);
+	request.send();
+
+	return JSON.parse(request.response);
+
+}
+
+function getCommentsById(comments, index) {
+
+	result = [];
+
+	for (k = 0 ; k < comments.length ; k++) {
+
+		if (comments[k][0] == index) {
+
+			result.push(comments[k][1]);
+
+		}
+
+	}
+
+	return result;
+
+}
+
+function postComment(id) {
+
+	comment = document.getElementById("post-comment" + id).value;
+
+	request.open("POST", "api.php?id=" + id + "&comment=" + comment , false);
+	request.send();
+
+	blogContent = getAllBlogContentFromAPI();
+	displayBlogContent(blogContent);
+
+}
+
+function removeComment(id) {
+
+	if (confirm("Are you sure you want to remove comment from blogpost " + id + " from the database?") == true) {
+
+		request.open("POST", "api.php?commentremove=yes&id=" + id, false);
+		request.send();
+
+		console.log(request.response);
+
+		comments = getCommentsFromServer();
+
+		$('#comment-list').empty();
+
+		var tableHeader = "<tr><th>Blogpost</th><th>Comment</th><th>Remove</th></tr>";
+
+		document.getElementById("comment-list").innerHTML += tableHeader;
+
+		for (i = 0 ; i < comments.length ; i++) {
+
+			var tableRow = "<tr><td>" + comments[i][0] + "</td><td>" + comments[i][1] + "</td><td><div class='remove-comment-cell' onclick=removeComment(" 
+								+ comments[i][2] + ")>Remove</div>"
+			document.getElementById("comment-list").innerHTML += tableRow;
+
+		}
+
+	}
+
+}
+
+function setComments(id) {
+
+	outcome = $('input[name=comments]:checked', '#radioform' + id).val();
+
+	request.open("POST", "api.php?setcommentallowed=yes&id=" + id + "&value=" + outcome, false);
+	request.send();
+
+	alert("comments allowed for blogpost " + id + " set to " + outcome);
+
+	navigateTo("create-article");
+
 }

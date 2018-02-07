@@ -115,7 +115,13 @@
 
 			<div class="nav-element" onclick="navigateTo('add-abbreviation')">
 
-				<p>Add Abbreviation</p>
+				<p>Add abbreviation</p>
+
+			</div>
+
+			<div class="nav-element" onclick="navigateTo('remove-comment')">
+
+				<p>Remove comment</p>
 
 			</div>
 
@@ -130,7 +136,7 @@
 				</select>
 				<div id="inserted-categories"></div>
 				<button id="add-category-button" onclick="addCategoryToMessage(); return false;">Add category</button><br><br>
-				<textarea id="write-message" rows=35 cols=160></textarea><br>
+				<textarea id="write-message" rows=33 cols=160></textarea><br>
 
 				<button onclick="submitMessage(); return false;">Submit message</button>
 
@@ -152,7 +158,7 @@
 
 		<div id="add-abbreviation" class="content">
 
-			<table id="abbreviation-list">
+			<table id="abbreviation-list" border="1">
 
 			</table>
 
@@ -163,6 +169,14 @@
 				<button>Submit</button>
 
 			</form>
+
+		</div>
+
+		<div id="remove-comment" class="content">
+
+			<table id="comment-list" border="1">
+
+			</table>
 
 		</div>
 

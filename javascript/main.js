@@ -53,9 +53,28 @@ function navigateTo(contentToDisplay) {
 
 			for (i = 0 ; i < blogpostsNonDuplicates.length ; i++) {
 
+				if (blogpostsNonDuplicates[i][3] === "1") {
+
+					commentSelection = "<td><form id=radioform"+ blogpostsNonDuplicates[i][0] + ">" +
+						"<input type=radio name=comments value='true' checked='checked'>Comments allowed<br>" +
+						 "<input type=radio name=comments value='false'>No comments allowed" +
+						 "<br>" +
+						 "<button type=button onclick=setComments(" + blogpostsNonDuplicates[i][0] + "); return false;>submit</button></td></form>";
+
+					} else {
+
+						commentSelection = "<td><form id=radioform"+ blogpostsNonDuplicates[i][0] + ">" +
+							"<input type=radio name=comments value='true'>Comments allowed<br>" +
+							 "<input type=radio name=comments value='false' checked='checked'>No comments allowed" +
+							 "<br>" +
+							 "<button type=button onclick=setComments(" + blogpostsNonDuplicates[i][0] + "); return false;>submit</button></td></form>";						
+
+					}
+
 				table.innerHTML += "<tr>";
 				table.innerHTML += "<td>" + blogpostsNonDuplicates[i][0] + "</td><td>" + blogpostsNonDuplicates[i][2].substring(0,180) 
-									+ "...</td><td><div class='remove' onclick='removeArticle(" + blogpostsNonDuplicates[i][0] + ")'>Remove</td>";
+									+ "...</td><td><div class='remove' onclick='removeArticle(" + blogpostsNonDuplicates[i][0] + "); return false'>Remove</td>" +
+									commentSelection;
 				table.innerHTML += "</tr>";
 
 			}
@@ -75,6 +94,24 @@ function navigateTo(contentToDisplay) {
 				var newRow = "<tr><td>" + Object.keys(shortcuts)[i] + "</td><td>" + shortcuts[Object.keys(shortcuts)[i]] + "</td></tr>";
 
 				document.getElementById('abbreviation-list').innerHTML += newRow;
+
+			}
+
+		} else if (contentToDisplay == "remove-comment") {
+
+			comments = getCommentsFromServer();
+
+			$('#comment-list').empty();
+
+			var tableHeader = "<tr><th>Blogpost</th><th>Comment</th><th>Remove</th></tr>";
+
+			document.getElementById("comment-list").innerHTML += tableHeader;
+
+			for (i = 0 ; i < comments.length ; i++) {
+
+				var tableRow = "<tr><td>" + comments[i][0] + "</td><td>" + comments[i][1] + "</td><td><div class='remove-comment-cell' onclick=removeComment(" 
+								+ comments[i][2] + ")>Remove</div>"
+				document.getElementById("comment-list").innerHTML += tableRow;
 
 			}
 
@@ -111,6 +148,7 @@ function loginBlogger() {
 
 	if (checkLogin(username, password)) {
 
+		document.getElementById("remove-comment").style.display = "none";
 		document.getElementById('user-interface').style.display = "none";
 		document.getElementById('add-category').style.display = "none";
 		document.getElementById('add-abbreviation').style.display = "none";
