@@ -10,6 +10,8 @@ function createCategory() {
 	request.open("POST", "api.php?category=" + newCategory, false);
 	request.send();
 
+	console.log(request.response);
+
 	newCategory = "";
 
 	refreshCategoriesForBlogger();
@@ -49,7 +51,6 @@ function checkLogin(username, password) {
 function submitMessage() {
 
 	categories = categoriesToAdd;
-	console.log(categories);
 
 	if (categories.length == 0) {
 
@@ -62,6 +63,12 @@ function submitMessage() {
 
 		request.open("POST", "api.php?categories=" + categories + "&message=" + message, false);
 		request.send();
+
+		if (request.response === "blogger not logged in") {
+
+			alert("Please log in to post messages")
+
+		}
 
 		location.reload();
 

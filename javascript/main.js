@@ -193,6 +193,7 @@ window.onload = function() {
     }
     
     ta.onkeydown = function() {
+    	
         clearTimeout(timer);
         timer = setTimeout(update, 200);
 

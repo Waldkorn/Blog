@@ -1,5 +1,7 @@
 <?php
 
+	session_start();
+
 	header("Content-Type:application/json");
 	$verb = $_SERVER['REQUEST_METHOD'];
 
@@ -20,6 +22,9 @@
 
 			$provided_username = $_GET['username'];
 			$provided_password = $_GET['password'];
+
+			$_SESSION["username"] = $provided_username;
+			$_SESSION["password"] = $provided_password;
 
 			$credentials = get_blogger_credentials_from_database();
 
@@ -53,7 +58,6 @@
 		} elseif (isset($_GET['abbreviations'])) {
 
 			$abbreviations = get_abbreviations_from_database();
-
 			echo json_encode($abbreviations);
 
 		} elseif (isset($_GET['comments'])) {
@@ -72,53 +76,71 @@
 
 	} elseif ($verb == 'POST') {
 
-		if (isset($_GET['categories']) and (isset($_GET['message']))) {
+		if(checklogin()) {
 
-			http_response_code(200);
-			write_message_to_database($_GET['categories'], $_GET['message']);
+			if (isset($_GET['categories']) and (isset($_GET['message']))) {
 
-		} elseif (isset($_GET['category'])) {
+				http_response_code(200);
+				write_message_to_database($_GET['categories'], $_GET['message']);
 
-			http_response_code(200);
-			write_category_to_database($_GET['category']);
+			} elseif (isset($_GET['category'])) {
 
-		} elseif (isset($_POST['abbreviation']) and isset($_POST['text'])) {
+				http_response_code(200);
+				write_category_to_database($_GET['category']);
 
-			http_response_code(200);
-			write_abbreviation_to_database($_POST['abbreviation'], $_POST['text']);
+			} elseif (isset($_POST['abbreviation']) and isset($_POST['text'])) {
 
-		} elseif (isset($_GET['id']) and isset($_GET['comment'])) {
+				http_response_code(200);
+				write_abbreviation_to_database($_POST['abbreviation'], $_POST['text']);
 
-			http_response_code(200);
-			write_comment_to_database($_GET['id'], $_GET['comment']);
+			} elseif (isset($_GET['id']) and isset($_GET['comment'])) {
 
-		} elseif (isset($_GET['commentremove']) and isset($_GET['id'])) {
+				http_response_code(200);
+				write_comment_to_database($_GET['id'], $_GET['comment']);
 
-			http_response_code(200);
-			remove_comment_from_database($_GET['id']);
+			} elseif (isset($_GET['commentremove']) and isset($_GET['id'])) {
 
-		} elseif (isset($_GET['setcommentallowed']) and isset($_GET['id']) and isset($_GET['value'])) {
+				http_response_code(200);
+				remove_comment_from_database($_GET['id']);
 
-			http_response_code(200);
-			allow_disallow_comments_for_post($_GET['id'], $_GET['value']);
+			} elseif (isset($_GET['setcommentallowed']) and isset($_GET['id']) and isset($_GET['value'])) {
+
+				http_response_code(200);
+				allow_disallow_comments_for_post($_GET['id'], $_GET['value']);
+
+			} else {
+
+				echo "not so great succes :(";
+				http_response_code(400);
+
+			}
 
 		} else {
 
-			echo "not so great succes :(";
-			http_response_code(400);
+			http_response_code(401);
+			echo "blogger not logged in";
 
 		}
 
 	} elseif ($verb == 'DELETE') {
 
-		if (isset($_GET['article']) and isset($_GET['id'])){
+		if(checklogin()) {
 
-			http_response_code(200);
-			remove_message_from_database($_GET['id']);
+			if (isset($_GET['article']) and isset($_GET['id'])){
+
+				http_response_code(200);
+				remove_message_from_database($_GET['id']);
+
+			} else {
+
+				http_response_code(400);
+
+			}
 
 		} else {
 
-			http_response_code(400);
+			http_response_code(401);
+			echo "blogger not logged in";
 
 		}
 
@@ -157,39 +179,43 @@
 
 	function write_message_to_database($categories, $message) {
 
-		global $dsn;
-		global $user_name;
-		global $pass_word;
+			global $dsn;
+			global $user_name;
+			global $pass_word;
 
-		$connection = new PDO($dsn, $user_name, $pass_word);
-		$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$connection = new PDO($dsn, $user_name, $pass_word);
+			$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-		$category_id_list = get_category_id($categories);
+			$category_id_list = get_category_id($categories);
 
-		//var_dump($category_id_list);
+			//var_dump($category_id_list);
 
-		$sql = "INSERT INTO blogposts (message) " . "VALUES ('$message')";
-		//echo $message . " added to database";
-		$connection->exec($sql);
-
-		$sql = "SELECT blogposts.id FROM blogposts";
-
-		$result = $connection->query($sql);
-
-		$ids=[];
-
-		foreach ($result as $row) {
-			$ids[] = $row['id'];
-		}
-
-		$last_id = $ids[count($ids) - 1];
-
-		for ($i = 0 ; $i < count($category_id_list) ; $i++) {
-			$sql = "INSERT INTO blogpost_categories (blogpost_id, category_id) " . "VALUES ('$last_id', '$category_id_list[$i]')";
+			$sql = "INSERT INTO blogposts (message) " . "VALUES ('$message')";
+			//echo $message . " added to database";
 			$connection->exec($sql);
-		}
 
-		$connection = null; // Close connection
+			$sql = "SELECT blogposts.id FROM blogposts";
+
+			$result = $connection->query($sql);
+
+			$ids=[];
+
+			foreach ($result as $row) {
+
+				$ids[] = $row['id'];
+
+			}
+
+			$last_id = $ids[count($ids) - 1];
+
+			for ($i = 0 ; $i < count($category_id_list) ; $i++) {
+				$sql = "INSERT INTO blogpost_categories (blogpost_id, category_id) " . "VALUES ('$last_id', '$category_id_list[$i]')";
+				$connection->exec($sql);
+			}
+
+			$connection = null; // Close connection
+
+
 
 	}
 
@@ -289,6 +315,7 @@
 	}
 
 	function get_messages_from_database_by_category($category) {
+
 		global $dsn;
 		global $user_name;
 		global $pass_word;
@@ -441,6 +468,23 @@
 		}
 
 		$connection->exec($sql);
+
+	}
+
+	function checkLogin() {
+
+		$credentials = get_blogger_credentials_from_database();
+
+		if ($_SESSION["username"] == $credentials['username'] and $_SESSION["password"] == $credentials['password']) {
+
+			return true;
+
+
+		} else {
+
+			return false;
+
+		}
 
 	}
 ?>
