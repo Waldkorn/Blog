@@ -7,10 +7,8 @@ function createCategory() {
 
 	newCategory = document.getElementById('new-category').value;
 
-	request.open("POST", "api.php?category=" + newCategory, false);
+	request.open("POST", "api/categories/index.php?category=" + newCategory, false);
 	request.send();
-
-	console.log(request.response);
 
 	newCategory = "";
 
@@ -32,7 +30,7 @@ function displayCategories(categories) {
 // Returns true if Login credentials match
 function checkLogin(username, password) {
 
-	request.open("GET", "api.php?username=" + username + "&password=" + password, false);
+	request.open("GET", "api/credentials/index.php?username=" + username + "&password=" + password, false);
 	request.send();
 
 	if (request.response === "1") {
@@ -61,7 +59,7 @@ function submitMessage() {
 		//message = tinymce.get('write-message').getContent({format: 'raw'});
 		message = document.getElementById('write-message').value;
 
-		request.open("POST", "api.php?categories=" + categories + "&message=" + message, false);
+		request.open("POST", "api/messages/index.php?categories=" + categories + "&message=" + message, false);
 		request.send();
 
 		if (request.response === "blogger not logged in") {
@@ -69,6 +67,8 @@ function submitMessage() {
 			alert("Please log in to post messages")
 
 		}
+
+		console.log(request.response);
 
 		location.reload();
 
@@ -164,7 +164,7 @@ function displayBlogContent(content) {
 // Returns an array with all blog posts
 function getAllBlogContentFromAPI() {
 
-	request.open("GET", "api.php", false);
+	request.open("GET", "api/messages/", false);
 	request.send();
 
 	return JSON.parse(request.response);
@@ -174,7 +174,7 @@ function getAllBlogContentFromAPI() {
 // Returns an array with all categories
 function getAllCategoriesFromAPI() {
 
-	request.open("get", "api.php?getcategories=yes", false);
+	request.open("get", "api/categories/", false);
 	request.send();
 
 	return JSON.parse(request.response);
@@ -229,7 +229,7 @@ function removeArticle(id) {
 
 	if (confirm("Are you sure you want to remove blogpost with id " + id + " from the database?")  == true) {
 
-		request.open("DELETE", "api.php?article=yes&id=" + id, false);
+		request.open("POST", "api/messages/index.php?article=yes&id=" + id, false);
 		request.send();
 
 		alert("Article succesfully deleted");
@@ -241,7 +241,7 @@ function removeArticle(id) {
 
 function getListOfAbbreviations() {
 
-	request.open("GET", "api.php?abbreviations=yes", false);
+	request.open("GET", "api/abbreviations/", false);
 	request.send();
 
 	return JSON.parse(request.response);
@@ -249,7 +249,7 @@ function getListOfAbbreviations() {
 
 function getCommentsFromServer() {
 
-	request.open("get", "api.php?comments=yes", false);
+	request.open("GET", "api/comments/index.php?comments=yes", false);
 	request.send();
 
 	return JSON.parse(request.response);
@@ -278,7 +278,7 @@ function postComment(id) {
 
 	comment = document.getElementById("post-comment" + id).value;
 
-	request.open("POST", "api.php?id=" + id + "&comment=" + comment , false);
+	request.open("POST", "api/comments/index.php?id=" + id + "&comment=" + comment , false);
 	request.send();
 
 	blogContent = getAllBlogContentFromAPI();
@@ -290,7 +290,7 @@ function removeComment(id) {
 
 	if (confirm("Are you sure you want to remove comment from blogpost " + id + " from the database?") == true) {
 
-		request.open("POST", "api.php?commentremove=yes&id=" + id, false);
+		request.open("POST", "api/comments/index.php?commentremove=yes&id=" + id, false);
 		request.send();
 
 		console.log(request.response);
@@ -319,7 +319,7 @@ function setComments(id) {
 
 	outcome = $('input[name=comments]:checked', '#radioform' + id).val();
 
-	request.open("POST", "api.php?setcommentallowed=yes&id=" + id + "&value=" + outcome, false);
+	request.open("POST", "api/comments/index.php?setcommentallowed=yes&id=" + id + "&value=" + outcome, false);
 	request.send();
 
 	alert("comments allowed for blogpost " + id + " set to " + outcome);

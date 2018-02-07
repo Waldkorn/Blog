@@ -168,7 +168,7 @@ function displayContentByCategory(category) {
 
 	$("#content").toggle('fast');
 
-	request.open("GET", "api.php?category=" + category, false);
+	request.open("GET", "api/messages/index.php?category=" + category, false);
 	request.send();
 
 	response = JSON.parse(request.response);
