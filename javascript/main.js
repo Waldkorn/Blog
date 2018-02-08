@@ -5,38 +5,34 @@ shortcuts = getListOfAbbreviations();
 // Navigates to a specific page
 function navigateTo(contentToDisplay) {
 
-	if (contentToDisplay == 'blog-content') {
+	switch (contentToDisplay) {
 
-		blogContent = getAllBlogContentFromAPI();
-		displayBlogContent(blogContent);
+		case "blog-content":
+			blogContent = getAllBlogContentFromAPI();
+			displayBlogContent(blogContent);
 
-		categoryContent = getAllCategoriesFromAPI();
-		displayCategories(categoryContent);
-		
-	} else if (contentToDisplay == "add-category") {
-
-		refreshCategoriesForBlogger();
-
-	} else if (contentToDisplay == "create-article") {
-
-		categories = getAllCategoriesFromAPI();
-		createDropDownCategories(categories);
-
-	} else if (contentToDisplay == "remove-article") {
-
-		//maakt een tabel met alle blogposts
-		blogposts = getAllBlogContentFromAPI();
-		createTableWithBlogposts(blogposts);
-
-	} else if (contentToDisplay == "add-abbreviation") {
-
-		abbreviations = getListOfAbbreviations();
-		createAbbreviationList(abbreviations);
-
-	} else if (contentToDisplay == "remove-comment") {
-
-		comments = getCommentsFromServer();
-		createCommentsList(comments);
+			categoryContent = getAllCategoriesFromAPI();
+			displayCategories(categoryContent);
+			break;
+		case "add-category":
+			refreshCategoriesForBlogger();
+			break;
+		case "create-article":
+			categories = getAllCategoriesFromAPI();
+			createDropDownCategories(categories);
+			break;
+		case "manage-articles":
+			blogposts = getAllBlogContentFromAPI();
+			createTableWithBlogposts(blogposts);
+			break;
+		case "add-abbreviation":
+			abbreviations = getListOfAbbreviations();
+			createAbbreviationList(abbreviations);
+			break;
+		case "remove-comment":
+			comments = getCommentsFromServer();
+			createCommentsList(comments);
+			break;
 
 	}
 
@@ -52,6 +48,7 @@ function loginUser() {
 	navigateTo('home-content');
 
 }
+
 // Checks blogger credentials and logs in the blogger if the API returns true
 function loginBlogger() {
 
@@ -60,11 +57,9 @@ function loginBlogger() {
 
 	if (checkLogin(username, password)) {
 
-		document.getElementById("remove-comment").style.display = "none";
 		document.getElementById('user-interface').style.display = "none";
-		document.getElementById('add-category').style.display = "none";
-		document.getElementById('add-abbreviation').style.display = "none";
 		document.getElementById('blogger-interface').style.display = "block";
+
 		navigateTo('create-article');
 
 	} else {
@@ -78,25 +73,13 @@ function loginBlogger() {
 // Displays blogposts depending on the category provided
 function displayContentByCategory(category) {
 
-	/*
-	$("#content").toggle('fast');
-
-	request.open("GET", "api/messages/index.php?category=" + category, false);
-	request.send();
-
-	response = JSON.parse(request.response);
-
-	displayBlogContent(response);
-
-	$("#content").toggle('fast');
-	*/
-
 	$(".blogpost").hide();
 	$("." + category).show();
 
 }
 
 window.onload = function() {
+
     var ta = document.getElementById("write-message");
     var timer = 0;
     var re = new RegExp("\\b(" + Object.keys(shortcuts).join("|") + ")\\b", "g");

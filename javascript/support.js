@@ -33,6 +33,8 @@ function checkLogin(username, password) {
 	request.open("GET", "api/credentials/index.php?username=" + username + "&password=" + password, false);
 	request.send();
 
+	console.log(request.response);
+
 	if (request.response === "1") {
 
 		return true;
@@ -67,8 +69,6 @@ function submitMessage() {
 			alert("Please log in to post messages")
 
 		}
-
-		console.log(request.response);
 
 		location.reload();
 
@@ -141,29 +141,7 @@ function displayBlogContent(content) {
 
 			for (j = 0 ; j < commentsForThisPost.length ; j++) {
 
-					document.getElementById('comments' + content[i][0]).innerHTML += "<div class='comment'>" + commentsForThisPost[j][0] + "</div>";
-
-				}
-
-				document.getElementById('comments' + content[i][0]).innerHTML += "<input id=post-comment" + content[i][0] + " placeholder='comment'></input>";
-				document.getElementById('comments' + content[i][0]).innerHTML += "<button onclick=postComment(" + content[i][0] + ")>Post comment</button>";
-
-			} else {
-
-				document.getElementById('comments' + content[i][0]).innerHTML = "<div class=nocomments>No comments allowed</div>"
-
-			}
-		
-
-		/*
-
-		if (content[i][3] === "1") {
-
-			commentsForThisPost = getCommentsById(comments, content[i][0]);
-
-			for (j = 0 ; j < commentsForThisPost.length ; j++) {
-
-				document.getElementById('comments' + content[i][0]).innerHTML += "<div class='comment'>" + commentsForThisPost[j] + "</div>";
+				document.getElementById('comments' + content[i][0]).innerHTML += "<div class='comment'>" + commentsForThisPost[j][0] + "</div>";
 
 			}
 
@@ -175,7 +153,6 @@ function displayBlogContent(content) {
 			document.getElementById('comments' + content[i][0]).innerHTML = "<div class=nocomments>No comments allowed</div>"
 
 		}
-		*/
 
 	}
 
@@ -199,16 +176,6 @@ function getAllCategoriesFromAPI() {
 
 	return JSON.parse(request.response);
 
-}
-
-// Supporting function which helps sort the array of messages
-function sortFunction(a, b) {
-    if (parseInt(a[0]) === parseInt(b[0])) {
-        return 0;
-    }
-    else {
-        return (parseInt(a[0]) < parseInt(b[0])) ? -1 : 1;
-    }
 }
 
 // Grabs all message from the API and displays them in a table, also adds an "add new category" button
@@ -275,26 +242,6 @@ function getCommentsFromServer() {
 	return JSON.parse(request.response);
 
 }
-
-/*
-function getCommentsById(comments, index) {
-
-	result = [];
-
-	for (k = 0 ; k < comments.length ; k++) {
-
-		if (comments[k][0] == index) {
-
-			result.push(comments[k][1]);
-
-		}
-
-	}
-
-	return result;
-
-}
-*/
 
 function postComment(id) {
 
@@ -367,7 +314,7 @@ function createDropDownCategories(categories) {
 
 function createTableWithBlogposts(blogposts) {
 
-	blogposts.sort(sortFunction);
+	blogposts.reverse();
 
 	table = document.getElementById("remove-article-table");
 
@@ -375,23 +322,22 @@ function createTableWithBlogposts(blogposts) {
 
 	for (i = 0 ; i < blogposts.length ; i++) {
 
+		commentSelection = "<td><form id=radioform" + blogposts[i][0] + ">"
+
 		if (blogposts[i][3] === "1") {
 
-			commentSelection = "<td><form id=radioform"+ blogposts[i][0] + ">" +
-				"<input type=radio name=comments value='true' checked='checked'>Comments allowed<br>" +
-				 "<input type=radio name=comments value='false'>No comments allowed" +
-				 "<br>" +
-				 "<button type=button onclick=setComments(" + blogposts[i][0] + "); return false;>submit</button></td></form>";
+			commentSelection += "<input type=radio name=comments value='true' checked='checked'>Comments allowed<br>" +
+				 				"<input type=radio name=comments value='false'>No comments allowed";
+				 
 
 		} else {
 
-			commentSelection = "<td><form id=radioform"+ blogposts[i][0] + ">" +
-				"<input type=radio name=comments value='true'>Comments allowed<br>" +
-				 "<input type=radio name=comments value='false' checked='checked'>No comments allowed" +
-				 "<br>" +
-				 "<button type=button onclick=setComments(" + blogposts[i][0] + "); return false;>submit</button></td></form>";						
+			commentSelection +=	"<input type=radio name=comments value='true'>Comments allowed<br>" +
+				 				"<input type=radio name=comments value='false' checked='checked'>No comments allowed"			
 
 		}
+
+		commentSelection += "<br>" + "<button type=button onclick=setComments(" + blogposts[i][0] + "); return false;>submit</button></td></form>";
 
 		table.innerHTML += "<tr>";
 		table.innerHTML += "<td>" + blogposts[i][0] + "</td><td>" + blogposts[i][2].substring(0,180) 
