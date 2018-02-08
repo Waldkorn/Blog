@@ -51,14 +51,30 @@ function get_all_messages_from_API() {
 	$connection = new PDO($dsn, $user_name, $pass_word);
 	$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-	$sql = "SELECT b.id, b.message, c.category, b.comments_allowed FROM blogposts b, categories c, blogpost_categories bc WHERE bc.category_id = c.id AND bc.blogpost_id = b.id";
+	$sql = "SELECT b.id, b.message, b.comments_allowed FROM blogposts b";
 
 	$result = $connection->query($sql);
 
 	$response = array();
 
 	foreach ($result as $row) {
-		$response[] = array($row['id'], $row['category'], $row['message'], $row['comments_allowed']);
+
+		$categories = array();
+
+		$id = $row['id'];
+
+		$sql ="SELECT c.category FROM categories c, blogpost_categories bc WHERE bc.blogpost_id = '$id' AND bc.category_id = c.id";
+
+		$category_list = $connection->query($sql);
+
+		foreach ($category_list as $category) {
+			
+			$categories[] = $category;
+
+		}
+
+		$response[] = array($row['id'], $categories, $row['message'], $row['comments_allowed']);
+		
 	}
 
 	$json_response = json_encode($response);

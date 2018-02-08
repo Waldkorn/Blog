@@ -113,47 +113,45 @@ function addCategoryToMessage() {
 // function that displays blog posts and adds the appropriate category/categories to it.
 function displayBlogContent(content) {
 
-	content.sort(sortFunction);
-	highestid = Infinity;
 	document.getElementById('content').innerHTML = "";
 
 	comments = getCommentsFromServer();
 
 	for (i = content.length - 1 ; i > 0 ; i--) {
 
-		if (content[i][0] < highestid) {
+		document.getElementById('content').innerHTML += "<div class='blogpost' id=blogpost" + content[i][0] + "></div>";
+		document.getElementById('blogpost' + content[i][0]).innerHTML = "<div class='blogpostcategory' id='blogpostcategory" + content[i][0] + "'></div>";
+		document.getElementById('blogpost' + content[i][0]).innerHTML += "<div class='blogpost-message'>" + content[i][2] + "</div>";
 
-			document.getElementById('content').innerHTML += "<div class='blogpost' id=blogpost" + content[i][0] + "></div>";
-			document.getElementById('blogpost' + content[i][0]).innerHTML = "<div class='blogpostcategory' id='blogpostcategory" + content[i][0] + "'>" + content[i][1] + "</div>";
-			document.getElementById('blogpost' + content[i][0]).innerHTML += "<div class='blogpost-message'>" + content[i][2] + "</div>";
-			highestid = content[i][0];
+		categories = content[i][1];
 
-			document.getElementById('content').innerHTML += "<div class='comments' id=comments" + content[i][0] + "></div>";
+		console.log(categories);
 
-			if (content[i][3] === "1") {
+		for (j = 0 ; j < categories.length ; j++) {
 
-				comments = getCommentsFromServer();
+			document.getElementById("blogpostcategory" + content[i][0]).innerHTML += " " + categories[j][0];
 
-				commentsForThisPost = getCommentsById(comments, content[i][0]);
+		}
 
-				for (j = 0 ; j < commentsForThisPost.length ; j++) {
 
-					document.getElementById('comments' + content[i][0]).innerHTML += "<div class='comment'>" + commentsForThisPost[j] + "</div>";
+		document.getElementById('content').innerHTML += "<div class='comments' id=comments" + content[i][0] + "></div>";
 
-				}
+		if (content[i][3] === "1") {
 
-				document.getElementById('comments' + content[i][0]).innerHTML += "<input id=post-comment" + content[i][0] + " placeholder='comment'></input>";
-				document.getElementById('comments' + content[i][0]).innerHTML += "<button onclick=postComment(" + content[i][0] + ")>Post comment</button>";
+			commentsForThisPost = getCommentsById(comments, content[i][0]);
 
-			} else {
+			for (j = 0 ; j < commentsForThisPost.length ; j++) {
 
-				document.getElementById('comments' + content[i][0]).innerHTML = "<div class=nocomments>No comments allowed</div>"
+				document.getElementById('comments' + content[i][0]).innerHTML += "<div class='comment'>" + commentsForThisPost[j] + "</div>";
 
 			}
 
-		} else if (content[i][0] == highestid) {
+			document.getElementById('comments' + content[i][0]).innerHTML += "<input id=post-comment" + content[i][0] + " placeholder='comment'></input>";
+			document.getElementById('comments' + content[i][0]).innerHTML += "<button onclick=postComment(" + content[i][0] + ")>Post comment</button>";
 
-			document.getElementById("blogpostcategory" + content[i][0]).innerHTML += ", " + content[i][1];
+		} else {
+
+			document.getElementById('comments' + content[i][0]).innerHTML = "<div class=nocomments>No comments allowed</div>"
 
 		}
 
