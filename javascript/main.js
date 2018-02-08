@@ -5,131 +5,43 @@ shortcuts = getListOfAbbreviations();
 // Navigates to a specific page
 function navigateTo(contentToDisplay) {
 
-	if (currentContent != contentToDisplay) {
+	if (contentToDisplay == 'blog-content') {
 
-		if (contentToDisplay == 'blog-content') {
+		blogContent = getAllBlogContentFromAPI();
+		displayBlogContent(blogContent);
 
-			blogContent = getAllBlogContentFromAPI();
-			displayBlogContent(blogContent);
+		categoryContent = getAllCategoriesFromAPI();
+		displayCategories(categoryContent);
+		
+	} else if (contentToDisplay == "add-category") {
 
-			categoryContent = getAllCategoriesFromAPI();
-			displayCategories(categoryContent);
-			
-		} else if (contentToDisplay == "add-category") {
+		refreshCategoriesForBlogger();
 
-			refreshCategoriesForBlogger();
+	} else if (contentToDisplay == "create-article") {
 
-		} else if (contentToDisplay == "create-article") {
+		categories = getAllCategoriesFromAPI();
+		createDropDownCategories(categories);
 
-			categories = getAllCategoriesFromAPI();
+	} else if (contentToDisplay == "remove-article") {
 
-			// Creates drop down menu of all the categories for blogger
-			document.getElementById("categories-message").innerHTML = "<option value=" + categories[0][1] + ">" + categories[0][1] + "</option>";
-			
-			for (i = 1 ; i < categories.length ; i++) {
+		//maakt een tabel met alle blogposts
+		blogposts = getAllBlogContentFromAPI();
+		createTableWithBlogposts(blogposts);
 
-				document.getElementById("categories-message").innerHTML += "<option value=" + categories[i][1] + ">" + categories[i][1] + "</option>";
+	} else if (contentToDisplay == "add-abbreviation") {
 
-			}
+		abbreviations = getListOfAbbreviations();
+		createAbbreviationList(abbreviations);
 
-		} else if (contentToDisplay == "remove-article") {
+	} else if (contentToDisplay == "remove-comment") {
 
-			//maakt een tabel met alle blogposts
-			blogposts = getAllBlogContentFromAPI();
-			blogposts.sort(sortFunction);
-			maxid = -1;
-			blogpostsNonDuplicates = [];
-
-			for (i = 0 ; i < blogposts.length ; i++) {
-				if (parseInt(blogposts[i][0]) > maxid) {
-					blogpostsNonDuplicates.push(blogposts[i]);
-					maxid = parseInt(blogposts[i][0]);
-				}
-			}
-
-			table = document.getElementById("remove-article-table");
-
-			table.innerHTML = "";
-
-			for (i = 0 ; i < blogpostsNonDuplicates.length ; i++) {
-
-				if (blogpostsNonDuplicates[i][3] === "1") {
-
-					commentSelection = "<td><form id=radioform"+ blogpostsNonDuplicates[i][0] + ">" +
-						"<input type=radio name=comments value='true' checked='checked'>Comments allowed<br>" +
-						 "<input type=radio name=comments value='false'>No comments allowed" +
-						 "<br>" +
-						 "<button type=button onclick=setComments(" + blogpostsNonDuplicates[i][0] + "); return false;>submit</button></td></form>";
-
-					} else {
-
-						commentSelection = "<td><form id=radioform"+ blogpostsNonDuplicates[i][0] + ">" +
-							"<input type=radio name=comments value='true'>Comments allowed<br>" +
-							 "<input type=radio name=comments value='false' checked='checked'>No comments allowed" +
-							 "<br>" +
-							 "<button type=button onclick=setComments(" + blogpostsNonDuplicates[i][0] + "); return false;>submit</button></td></form>";						
-
-					}
-
-				table.innerHTML += "<tr>";
-				table.innerHTML += "<td>" + blogpostsNonDuplicates[i][0] + "</td><td>" + blogpostsNonDuplicates[i][2].substring(0,180) 
-									+ "...</td><td><div class='remove' onclick='removeArticle(" + blogpostsNonDuplicates[i][0] + "); return false'>Remove</td>" +
-									commentSelection;
-				table.innerHTML += "</tr>";
-
-			}
-
-		} else if (contentToDisplay == "add-abbreviation") {
-
-			shortcuts = getListOfAbbreviations();
-
-			$('#abbreviation-list').empty();
-
-			var tableHeader = "<tr><th>Abbreviation</th><th>Text</th></tr>";
-
-			document.getElementById("abbreviation-list").innerHTML += tableHeader;
-
-			for (i = 0 ; i <  Object.keys(shortcuts).length ; i++) {
-
-				var newRow = "<tr><td>" + Object.keys(shortcuts)[i] + "</td><td>" + shortcuts[Object.keys(shortcuts)[i]] + "</td></tr>";
-
-				document.getElementById('abbreviation-list').innerHTML += newRow;
-
-			}
-
-		} else if (contentToDisplay == "remove-comment") {
-
-			comments = getCommentsFromServer();
-
-			$('#comment-list').empty();
-
-			var tableHeader = "<tr><th>Blogpost</th><th>Comment</th><th>Remove</th></tr>";
-
-			document.getElementById("comment-list").innerHTML += tableHeader;
-
-			for (i = 0 ; i < comments.length ; i++) {
-
-				var tableRow = "<tr><td>" + comments[i][0] + "</td><td>" + comments[i][1] + "</td><td><div class='remove-comment-cell' onclick=removeComment(" 
-								+ comments[i][2] + ")>Remove</div>"
-				document.getElementById("comment-list").innerHTML += tableRow;
-
-			}
-
-		}
-
-		if (currentContent != "") {
-
-			// Hides the content it is currently showing
-			$("#" + currentContent).toggle('slow');
-
-		}
-
-		// Shows the content you are navigating to
-		$("#" + contentToDisplay).toggle('slow');
-
-		currentContent = contentToDisplay;
+		comments = getCommentsFromServer();
+		createCommentsList(comments);
 
 	}
+
+	$('.content').hide();
+	$('#' + contentToDisplay).show();
 
 }
 
