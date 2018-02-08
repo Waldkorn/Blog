@@ -14,7 +14,7 @@ if ($verb == "GET") {
 	} else {
 
 		http_response_code(200);
-		echo get_all_messages_from_API();
+		echo get_all_messages_from_database();
 
 	}
 
@@ -42,7 +42,7 @@ if ($verb == "GET") {
 
 }
 
-function get_all_messages_from_API() {
+function get_all_messages_from_database() {
 
 	global $dsn;
 	global $user_name;
@@ -60,11 +60,10 @@ function get_all_messages_from_API() {
 	foreach ($result as $row) {
 
 		$categories = array();
-
+		$comments = [];
 		$id = $row['id'];
 
 		$sql ="SELECT c.category FROM categories c, blogpost_categories bc WHERE bc.blogpost_id = '$id' AND bc.category_id = c.id";
-
 		$category_list = $connection->query($sql);
 
 		foreach ($category_list as $category) {
@@ -73,7 +72,16 @@ function get_all_messages_from_API() {
 
 		}
 
-		$response[] = array($row['id'], $categories, $row['message'], $row['comments_allowed']);
+		$sql = "SELECT comment FROM comments WHERE blogpost_id = '$id'";
+		$comment_list = $connection->query($sql);
+
+		foreach ($comment_list as $comment) {
+
+			$comments[] = $comment;
+
+		}
+
+		$response[] = array($row['id'], $categories, $row['message'], $row['comments_allowed'], $comments);
 		
 	}
 

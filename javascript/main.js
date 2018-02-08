@@ -166,6 +166,7 @@ function loginBlogger() {
 // Displays blogposts depending on the category provided
 function displayContentByCategory(category) {
 
+	/*
 	$("#content").toggle('fast');
 
 	request.open("GET", "api/messages/index.php?category=" + category, false);
@@ -176,6 +177,10 @@ function displayContentByCategory(category) {
 	displayBlogContent(response);
 
 	$("#content").toggle('fast');
+	*/
+
+	$(".blogpost").hide();
+	$("." + category).show();
 
 }
 
@@ -183,8 +188,6 @@ window.onload = function() {
     var ta = document.getElementById("write-message");
     var timer = 0;
     var re = new RegExp("\\b(" + Object.keys(shortcuts).join("|") + ")\\b", "g");
-    
-
     
     update = function() {
         ta.value = ta.value.replace(re, function($0, $1) {

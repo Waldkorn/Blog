@@ -128,11 +128,34 @@ function displayBlogContent(content) {
 		for (j = 0 ; j < categories.length ; j++) {
 
 			document.getElementById("blogpostcategory" + content[i][0]).innerHTML += " " + categories[j][0];
+			document.getElementById("blogpost" + content[i][0]).classList.add(categories[j][0]);
 
 		}
 
+		document.getElementById('blogpost' + content[i][0]).innerHTML += "<hr><div class='comments' id=comments" + content[i][0] + "></div>";
 
-		document.getElementById('content').innerHTML += "<div class='comments' id=comments" + content[i][0] + "></div>";
+		if (content[i][3] === "1") {
+
+			commentsForThisPost = content[i][4];
+			console.log(commentsForThisPost);
+
+			for (j = 0 ; j < commentsForThisPost.length ; j++) {
+
+					document.getElementById('comments' + content[i][0]).innerHTML += "<div class='comment'>" + commentsForThisPost[j][0] + "</div>";
+
+				}
+
+				document.getElementById('comments' + content[i][0]).innerHTML += "<input id=post-comment" + content[i][0] + " placeholder='comment'></input>";
+				document.getElementById('comments' + content[i][0]).innerHTML += "<button onclick=postComment(" + content[i][0] + ")>Post comment</button>";
+
+			} else {
+
+				document.getElementById('comments' + content[i][0]).innerHTML = "<div class=nocomments>No comments allowed</div>"
+
+			}
+		
+
+		/*
 
 		if (content[i][3] === "1") {
 
@@ -152,6 +175,7 @@ function displayBlogContent(content) {
 			document.getElementById('comments' + content[i][0]).innerHTML = "<div class=nocomments>No comments allowed</div>"
 
 		}
+		*/
 
 	}
 
@@ -162,6 +186,8 @@ function getAllBlogContentFromAPI() {
 
 	request.open("GET", "api/messages/", false);
 	request.send();
+
+	console.log(JSON.parse(request.response));
 
 	return JSON.parse(request.response);
 
@@ -252,6 +278,7 @@ function getCommentsFromServer() {
 
 }
 
+/*
 function getCommentsById(comments, index) {
 
 	result = [];
@@ -269,6 +296,7 @@ function getCommentsById(comments, index) {
 	return result;
 
 }
+*/
 
 function postComment(id) {
 
