@@ -15,29 +15,29 @@
 
 	} elseif ($verb == 'POST') {
 
-		if(checklogin()) {
-
-			if (isset($_GET['id']) and isset($_GET['comment'])) {
+		if (isset($_GET['id']) and isset($_GET['comment'])) {
 
 				http_response_code(200);
 				write_comment_to_database($_GET['id'], $_GET['comment']);
 
-			} elseif (isset($_GET['commentremove']) and isset($_GET['id'])) {
+		} elseif(checklogin()) {
 
-				http_response_code(200);
-				remove_comment_from_database($_GET['id']);
+				if (isset($_GET['commentremove']) and isset($_GET['id'])) {
 
-			} elseif (isset($_GET['setcommentallowed']) and isset($_GET['id']) and isset($_GET['value'])) {
+					http_response_code(200);
+					remove_comment_from_database($_GET['id']);
 
-				http_response_code(200);
-				allow_disallow_comments_for_post($_GET['id'], $_GET['value']);
+				} elseif (isset($_GET['setcommentallowed']) and isset($_GET['id']) and isset($_GET['value'])) {
 
-			} else {
+					http_response_code(200);
+					allow_disallow_comments_for_post($_GET['id'], $_GET['value']);
 
-				echo "not so great succes :(";
-				http_response_code(400);
+				} else {
 
-			}
+					echo "not so great succes :(";
+					http_response_code(400);
+
+				}
 
 		} else {
 
@@ -45,6 +45,8 @@
 			echo "blogger not logged in";
 
 		}
+
+		
 
 	} else {
 

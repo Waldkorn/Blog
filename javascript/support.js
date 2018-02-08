@@ -125,8 +125,6 @@ function displayBlogContent(content) {
 
 		categories = content[i][1];
 
-		console.log(categories);
-
 		for (j = 0 ; j < categories.length ; j++) {
 
 			document.getElementById("blogpostcategory" + content[i][0]).innerHTML += " " + categories[j][0];
@@ -278,6 +276,8 @@ function postComment(id) {
 
 	request.open("POST", "api/comments/index.php?id=" + id + "&comment=" + comment , false);
 	request.send();
+
+	console.log(request.response);
 
 	blogContent = getAllBlogContentFromAPI();
 	displayBlogContent(blogContent);
