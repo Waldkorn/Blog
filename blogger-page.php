@@ -32,9 +32,9 @@
 
 		</div>
 
-		<div class="nav-element" onclick="navigateTo('remove-comment')">
+		<div class="nav-element last-element" onclick="goHome()">
 
-			<p>Remove comment</p>
+			<p>Home</p>
 
 		</div>
 
@@ -79,14 +79,6 @@
 		<input id="abbreviation-text-input" placeholder="Text"><br>
 
 		<button onclick="submitAbbreviation()">Submit</button>
-
-	</div>
-
-	<div id="remove-comment" class="content">
-
-		<table id="comment-list" border="1">
-
-		</table>
 
 	</div>
 

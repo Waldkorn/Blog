@@ -2,6 +2,7 @@
 <?php
 
 $verb = $_SERVER['REQUEST_METHOD'];
+$credentials = get_blogger_credentials_from_database();
 
 if ($verb == "GET") {
 
@@ -15,8 +16,6 @@ if ($verb == "GET") {
 		$_SESSION["username"] = $provided_username;
 		$_SESSION["password"] = $provided_password;
 
-		$credentials = get_blogger_credentials_from_database();
-
 		if ($provided_username == $credentials['username'] and $provided_password == $credentials['password']) {
 
 			echo true;
@@ -27,6 +26,14 @@ if ($verb == "GET") {
 
 		}
 		
+	} elseif ($_SESSION["username"] == $credentials['username'] and $_SESSION["password"] == $credentials['password']) {
+
+		echo true;
+
+	} else {
+
+		echo false;
+
 	}
 
 }

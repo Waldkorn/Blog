@@ -72,12 +72,12 @@ function get_all_messages_from_database() {
 
 		}
 
-		$sql = "SELECT comment FROM comments WHERE blogpost_id = '$id'";
+		$sql = "SELECT id, comment FROM comments WHERE blogpost_id = '$id'";
 		$comment_list = $connection->query($sql);
 
 		foreach ($comment_list as $comment) {
 
-			$comments[] = $comment;
+			$comments[] = array($comment['id'], $comment['comment']);
 
 		}
 

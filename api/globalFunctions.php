@@ -2,9 +2,9 @@
 
 session_start();
 
-$dsn = 'mysql:host=localhost;dbname=tomklru270_ewoutblog';
-$user_name = 'tomklru270_ewout';
-$pass_word = "password";
+$dsn = 'mysql:host=127.0.0.1;dbname=blogdb';
+$user_name = 'root';
+$pass_word = "";
 
 function checkLogin() {
 

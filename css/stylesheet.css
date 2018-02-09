@@ -11,6 +11,27 @@ body {
 	padding: 0px;
 }
 
+.delete-button {
+	display: inline-block;
+	float: left;
+}
+
+.delete-cross {
+
+	padding-top: 8px;
+	width: 15px;
+
+	cursor:pointer;
+
+	-webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+
+}
+
 .comments {
 
 	background-color: #0093ec;
@@ -18,15 +39,35 @@ body {
 	margin: 2px;
 	border-radius: 2px;
 
+	float: left;
+	clear: both;
+
 }
 
 .comment {
 
+	display: inline-block;
+	float: left;
 	margin: 5px;
 	border-style: solid;
 	border-width: 1px;
 	border-color: black;
 
+}
+
+.comment-input, .comment-button {
+
+	float: left;
+	clear: both;
+
+}
+
+.comment-container {
+	display: block;
+	clear: both;
+	float: left;
+
+	margin-right: auto;
 }
 
 #blogger-picture {
@@ -241,6 +282,7 @@ body {
 	border-color: #0093EC;
 	margin: 2px;
 	border-radius: 2px;
+	clear: both;
 }
 
 .blogpostcategory {

@@ -135,15 +135,21 @@ function displayBlogContent(content) {
 		if (content[i][3] === "1") {
 
 			commentsForThisPost = content[i][4];
+			console.log(commentsForThisPost);
 
 			for (j = 0 ; j < commentsForThisPost.length ; j++) {
 
-				document.getElementById('comments' + content[i][0]).innerHTML += "<div class='comment'>" + commentsForThisPost[j][0] + "</div>";
+				document.getElementById('comments' + content[i][0]).innerHTML += "<div class='comment-container' id=comment-container-" + content[i][0] + j + "></div>"
+				document.getElementById("comment-container-" + content[i][0] + j).innerHTML += "<div class='comment'>" + commentsForThisPost[j][1] + "</div>";
+				if (isBloggerLoggedIn()) {
+					console.log("works");
+					document.getElementById("comment-container-" + content[i][0] + j).innerHTML += "<div class='delete-button'><img onclick=removeComment(" + commentsForThisPost[j][0] + ") class='delete-cross' src='images/delete-cross.png'></div>";
+				}
 
 			}
 
-			document.getElementById('comments' + content[i][0]).innerHTML += "<input id=post-comment" + content[i][0] + " placeholder='comment'></input>";
-			document.getElementById('comments' + content[i][0]).innerHTML += "<button onclick=postComment(" + content[i][0] + ")>Post comment</button>";
+			document.getElementById('comments' + content[i][0]).innerHTML += "<input class=comment-input id=post-comment" + content[i][0] + " placeholder='comment'></input>";
+			document.getElementById('comments' + content[i][0]).innerHTML += "<button class=comment-button onclick=postComment(" + content[i][0] + ")>Post comment</button>";
 
 		} else {
 
@@ -247,8 +253,6 @@ function postComment(id) {
 	request.open("POST", "api/comments/index.php?id=" + id + "&comment=" + comment , false);
 	request.send();
 
-	console.log(request.response);
-
 	blogContent = getAllBlogContentFromAPI();
 	displayBlogContent(blogContent);
 
@@ -278,6 +282,8 @@ function removeComment(id) {
 			document.getElementById("comment-list").innerHTML += tableRow;
 
 		}
+
+		location.reload();
 
 	}
 
@@ -400,9 +406,6 @@ function submitAbbreviation() {
 	abbreviation = document.getElementById("abbreviation-input").value;
 	text = document.getElementById("abbreviation-text-input").value;
 
-	console.log(abbreviation);
-	console.log(text);
-
 	request.open("POST", "api/abbreviations/index.php?abbreviation=" + abbreviation + "&text=" + text, false);
 	request.send();
 
@@ -412,5 +415,27 @@ function submitAbbreviation() {
 	alert("abbreviation ( " + abbreviation + " : " + text + " ) added to database");
 
 	navigateTo("create-article");
+
+}
+
+function isBloggerLoggedIn() {
+
+	request.open("GET", "api/credentials/", false);
+	request.send();
+
+	if (request.response == 1) {
+		return true;
+	} else {
+		return false;
+	}
+
+}
+
+function goHome() {
+
+	document.getElementById("user-interface").style.display = "block";
+	document.getElementById("blogger-interface").style.display = "none";
+
+	navigateTo("home-content");
 
 }
