@@ -1,11 +1,5 @@
 <html>
 
-<?php
-
-	session_start();
-
-?>
-
 <head>
 
 	<link rel="stylesheet" type="text/css" href="css/stylesheet.css" />
@@ -13,6 +7,8 @@
 </head>
 
 <body>
+
+	<?php include 'api/globalFunctions.php';?>
 
 	<div id="user-interface">
 
@@ -25,13 +21,28 @@
 				<p>Blog</p>
 			</div>
 
-			<div class="nav-element last-element" onclick="navigateTo('login-interface')">
-				<p>Login</p>
-			</div>
+			<?php if (checklogin()): ?>
+
+				<div class="nav-element last-element" onclick="logoutBlogger()">
+					<p>Log out</p>
+				</div>
+
+				<div class="nav-element last-element" onclick="manageArticles()">
+					<p>Manage articles</p>
+				</div>
+
+			<?php else: ?>
+
+				<div class="nav-element last-element" onclick="navigateTo('login-interface')">
+					<p>Login</p>
+				</div>
+
+			<?php endif ?>
 
 			<div class="nav-element last-element" onclick="navigateTo('about-content')">
 				<p>About</p>
 			</div>
+
 		</div>
 
 		<div id="home-content" class="content">
@@ -97,96 +108,21 @@
 
 	</div>
 
-	<div id="blogger-interface">
+	<?php 
 
-		<div class="navbar" id="blogger-navbar">
+		if (checklogin()) {
 
-			<div class="nav-element" onclick="navigateTo('create-article')">
+			include 'blogger-page.php';
 
-				<p>Create article</p>
+	?>
 
-			</div>
+	<script type="text/javascript" src="javascript/bloggerInterface.js"></script>
 
-			<div class="nav-element" onclick="navigateTo('manage-articles')">
+	<?php
 
-				<p>Manage articles</p>
+		}
 
-			</div>
-
-			<div class="nav-element" onclick="navigateTo('add-category')">
-
-				<p>Add category</p>
-
-			</div>
-
-			<div class="nav-element" onclick="navigateTo('add-abbreviation')">
-
-				<p>Add abbreviation</p>
-
-			</div>
-
-			<div class="nav-element" onclick="navigateTo('remove-comment')">
-
-				<p>Remove comment</p>
-
-			</div>
-
-		</div>
-
-		<div id="create-article" class="content">
-
-			<form id="create-article-form">
-
-				Category:
-				<select id="categories-message">
-				</select>
-				<div id="inserted-categories"></div>
-				<button id="add-category-button" onclick="addCategoryToMessage(); return false;">Add category</button><br><br>
-				<textarea id="write-message" rows=33 cols=160></textarea><br>
-
-				<button onclick="submitMessage(); return false;">Submit message</button>
-
-			</form>
-
-		</div>
-
-		<div id="manage-articles" class="content">
-
-			<table id="remove-article-table" border="1">
-
-			</table>
-
-		</div>
-
-		<div id="add-category" class="content">
-
-		</div>
-
-		<div id="add-abbreviation" class="content">
-
-			<table id="abbreviation-list" border="1">
-
-			</table>
-
-			<form action="api/abbreviations/index.php" method="post">
-
-				<input id="abbreviation-input" placeholder="abbreviation" name="abbreviation"><br>
-				<input id="abbreviation-text-input" placeholder="text" name="text"><br>
-				<button>Submit</button>
-
-			</form>
-
-		</div>
-
-		<div id="remove-comment" class="content">
-
-			<table id="comment-list" border="1">
-
-			</table>
-
-		</div>
-
-	</div>
+	?>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
 	<script type="text/javascript" src="javascript/support.js"></script>

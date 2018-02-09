@@ -2,8 +2,6 @@
 
 session_start();
 
-header("Content-Type:application/json");
-
 $dsn = 'mysql:host=127.0.0.1;dbname=blogdb';
 $user_name = 'root';
 $pass_word = "";
@@ -15,7 +13,6 @@ function checkLogin() {
 	if ($_SESSION["username"] == $credentials['username'] and $_SESSION["password"] == $credentials['password']) {
 
 		return true;
-
 
 	} else {
 
@@ -71,6 +68,7 @@ function get_category_id($categories) {
 	}
 
 	return $category_id_list;
+
 }
 
 function get_categories_from_database() {

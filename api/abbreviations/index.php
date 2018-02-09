@@ -4,24 +4,22 @@
 
 	$verb = $_SERVER['REQUEST_METHOD'];
 
-	if ($verb = "GET") {
+	if ($verb == "GET") {
 
-		if (isset($_POST['abbreviation']) and isset($_POST['text'])) {
+		$abbreviations = get_abbreviations_from_database();
+		echo json_encode($abbreviations);
 
-				if (checklogin()) {
+	} elseif ($verb == "POST") {
+		
+		if (isset($_GET['abbreviation']) and isset($_GET['text'])) {
+
+			if (checklogin()) {
 
 				http_response_code(200);
-				write_abbreviation_to_database($_POST['abbreviation'], $_POST['text']);
+				write_abbreviation_to_database($_GET['abbreviation'], $_GET['text']);
 
 			}
-
-		} else {
-
-			$abbreviations = get_abbreviations_from_database();
-			echo json_encode($abbreviations);
-
 		}
-
 	}
 
 	function get_abbreviations_from_database() {

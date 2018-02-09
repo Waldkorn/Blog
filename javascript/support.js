@@ -33,8 +33,6 @@ function checkLogin(username, password) {
 	request.open("GET", "api/credentials/index.php?username=" + username + "&password=" + password, false);
 	request.send();
 
-	console.log(request.response);
-
 	if (request.response === "1") {
 
 		return true;
@@ -137,7 +135,6 @@ function displayBlogContent(content) {
 		if (content[i][3] === "1") {
 
 			commentsForThisPost = content[i][4];
-			console.log(commentsForThisPost);
 
 			for (j = 0 ; j < commentsForThisPost.length ; j++) {
 
@@ -301,7 +298,7 @@ function setComments(id) {
 
 function createDropDownCategories(categories) {
 
-		// Creates drop down menu of all the categories for blogger
+	// Creates drop down menu of all the categories for blogger
 	document.getElementById("categories-message").innerHTML = "<option value=" + categories[0][1] + ">" + categories[0][1] + "</option>";
 	
 	for (i = 1 ; i < categories.length ; i++) {
@@ -382,4 +379,38 @@ function createCommentsList(comments) {
 		document.getElementById("comment-list").innerHTML += tableRow;
 
 	}
+}
+
+function manageArticles() {
+	document.getElementById('user-interface').style.display = "none";
+	document.getElementById('blogger-interface').style.display = "block";
+
+	navigateTo('create-article');
+}
+
+function logoutBlogger() {
+
+	checkLogin("","");
+	location.reload();
+
+}
+
+function submitAbbreviation() {
+
+	abbreviation = document.getElementById("abbreviation-input").value;
+	text = document.getElementById("abbreviation-text-input").value;
+
+	console.log(abbreviation);
+	console.log(text);
+
+	request.open("POST", "api/abbreviations/index.php?abbreviation=" + abbreviation + "&text=" + text, false);
+	request.send();
+
+	document.getElementById("abbreviation-input").value = "";
+	document.getElementById("abbreviation-text-input").value ="";
+
+	alert("abbreviation ( " + abbreviation + " : " + text + " ) added to database");
+
+	navigateTo("create-article");
+
 }
